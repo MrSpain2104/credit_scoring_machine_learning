@@ -1,0 +1,17 @@
+,importance
+RevolvingUtilizationOfUnsecuredLines_clipped,0.12950219100675836
+RevolvingUtilizationOfUnsecuredLines_log,0.1215650463509208
+RevolvingUtilizationOfUnsecuredLines,0.11657246653805059
+age,0.0857085404072127
+MonthlyIncome,0.07333468782036182
+NumberOfTime30-59DaysPastDueNotWorse,0.07284147404229223
+DebtRatio,0.068747450437182
+DebtRatio_log,0.06837156832015596
+DebtRatio_clipped,0.06740108613945789
+NumberOfOpenCreditLinesAndLoans,0.05634460479496004
+NumberOfTimes90DaysLate,0.053346723441101175
+NumberOfTime60-89DaysPastDueNotWorse,0.03608972714498375
+NumberOfDependents,0.023300404640361382
+NumberRealEstateLoansOrLines,0.022460077859707498
+MonthlyIncome_na,0.0023864284599203612
+NumberOfDependents_na,0.0020275225965734585

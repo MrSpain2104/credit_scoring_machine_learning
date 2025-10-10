@@ -1,0 +1,15 @@
+modelo,configuracion,fit_time_s,speedup_vs_base,speedup_pct,predict_time_s,auc,delta_auc_vs_best,pos_recall
+GaussianNB,partial_fit,0.053,1.87,86.9,0.028,0.8321,0.0,0.5625
+GaussianNB,full_fit,0.1,1.0,0.0,0.023,0.8321,0.0,0.5625
+Logistic_L1,base_liblinear,6.166,1.0,0.0,0.004,0.8504,-0.0,0.1606
+Logistic_L1,saga,19.585,0.31,-68.5,0.004,0.8504,0.0,0.1606
+Logistic_L2,base_lbfgs,0.163,1.0,0.0,0.003,0.8504,0.0,0.1602
+Logistic_L2,saga,15.672,0.01,-99.0,0.004,0.8504,-0.0,0.1606
+SVM_approx,SGD_hinge,0.571,1.0,0.0,0.035,0.7728,-0.0839,0.0755
+SVM_approx,LinearSVC,0.743,0.77,-23.1,0.005,0.8567,0.0,0.1124
+SVM_approx,RFF_LinearSVC,9.528,0.06,-94.0,0.54,0.7573,-0.0994,0.0
+XGBoost,hist_no_es,0.71,11.06,1005.8,0.035,0.8537,-0.0051,0.7191
+XGBoost,hist,0.852,9.21,821.0,0.034,0.8563,-0.0025,0.7274
+XGBoost,hist,0.859,9.14,813.6,0.034,0.8563,-0.0025,0.7274
+XGBoost,exact,7.614,1.03,3.1,0.034,0.8588,0.0,0.7367
+XGBoost,exact,7.847,1.0,0.0,0.04,0.8588,0.0,0.7367

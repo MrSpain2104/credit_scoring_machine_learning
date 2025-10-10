@@ -1,0 +1,4 @@
+model,best_params,cv_auc,test_auc,test_f1_pos
+XGBoost,"{'clf__subsample': 1.0, 'clf__n_estimators': 100, 'clf__min_child_weight': 1, 'clf__max_depth': 4, 'clf__learning_rate': 0.05, 'clf__colsample_bytree': 0.7}",0.8572397867451468,0.8592921970572915,0.3499801508535133
+LogisticRegression,"{'clf__C': np.float64(10.0), 'clf__penalty': 'l2', 'clf__solver': 'lbfgs'}",0.8538383258661432,0.8549537590810103,0.33181551116333724
+LinearSVC,"{'clf__C': np.float64(0.001), 'clf__class_weight': None, 'clf__loss': 'squared_hinge'}",0.8567056404574416,0.8576545410561991,0.1856017997750281

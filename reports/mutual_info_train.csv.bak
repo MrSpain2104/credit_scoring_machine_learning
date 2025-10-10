@@ -1,0 +1,18 @@
+,mi
+RevolvingUtilizationOfUnsecuredLines_log,0.03710248479919298
+RevolvingUtilizationOfUnsecuredLines,0.036952652755595894
+RevolvingUtilizationOfUnsecuredLines_clipped,0.036717517475486794
+NumberOfTimes90DaysLate,0.03620408699111066
+NumberOfTime30-59DaysPastDueNotWorse,0.03370834351483243
+NumberOfTime60-89DaysPastDueNotWorse,0.025062213139709133
+NumberOfDependents,0.01007213875137647
+age,0.007213920365713333
+NumberRealEstateLoansOrLines,0.005895676876722433
+DebtRatio_log,0.004192820138521736
+DebtRatio_clipped,0.004076852755091398
+DebtRatio,0.003904229852526031
+NumberOfOpenCreditLinesAndLoans,0.003588078910301773
+MonthlyIncome,0.002631418720199674
+MonthlyIncome_na,0.0006040206277397875
+Unnamed: 0,0.0003754370627415682
+NumberOfDependents_na,0.0

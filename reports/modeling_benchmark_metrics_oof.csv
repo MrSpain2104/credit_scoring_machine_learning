@@ -1,0 +1,9 @@
+model,auc,ap,cm_path
+KNN,0.7379266915761143,0.23417722757461418,C:\MachineLearningPG\reports\confusion_matrix_KNN.png
+NaiveBayes,0.8377383586042929,0.348375811206612,C:\MachineLearningPG\reports\confusion_matrix_NaiveBayes.png
+Logistic_L2,0.850175964357725,0.37894774800379893,C:\MachineLearningPG\reports\confusion_matrix_Logistic_L2.png
+Logistic_L1,0.8502694438221289,0.3790606145735842,C:\MachineLearningPG\reports\confusion_matrix_Logistic_L1.png
+DecisionTree,0.6094709823049093,0.11850028671396548,C:\MachineLearningPG\reports\confusion_matrix_DecisionTree.png
+RandomForest,0.8259226888128847,0.32073293481109144,C:\MachineLearningPG\reports\confusion_matrix_RandomForest.png
+LinearSVM,0.8562078751148562,0.3862330287828768,C:\MachineLearningPG\reports\confusion_matrix_LinearSVM.png
+XGBoost,0.8562776150354601,0.37886810507591306,C:\MachineLearningPG\reports\confusion_matrix_XGBoost.png

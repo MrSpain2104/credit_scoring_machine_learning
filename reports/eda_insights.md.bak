@@ -1,0 +1,77 @@
+# Resumen EDA automatizado
+
+## Origen del dataset
+finalTrain cargado desde: C:\MachineLearningPG\data\processed_for_modeling.csv
+
+## Ratio de clases
+Total de observaciones (train): 145,755
+Proporción de casos positivos (SeriousDlqin2yrs=1): 0.0660 (9,625 casos)
+{0: 136130, 1: 9625}
+
+## Checks básicos
+Número de columnas: 18
+Número de filas: 145,755
+
+## Valores faltantes (top)
+No se detectaron valores faltantes.
+
+## Outliers (IQR) - top 10 variables con más outliers
+- DebtRatio_clipped: 27893 outliers (IQR)
+- DebtRatio: 27893 outliers (IQR)
+- DebtRatio_log: 26995 outliers (IQR)
+- NumberOfTime30-59DaysPastDueNotWorse: 23010 outliers (IQR)
+- NumberOfDependents: 13046 outliers (IQR)
+- SeriousDlqin2yrs: 9625 outliers (IQR)
+- MonthlyIncome: 8556 outliers (IQR)
+- NumberOfTimes90DaysLate: 7945 outliers (IQR)
+- NumberOfTime60-89DaysPastDueNotWorse: 7173 outliers (IQR)
+- NumberOfOpenCreditLinesAndLoans: 3728 outliers (IQR)
+
+## Skewness (top variables sesgadas)
+- MonthlyIncome: skew=125.475
+- NumberOfTimes90DaysLate: skew=9.267
+- NumberOfTime60-89DaysPastDueNotWorse: skew=7.514
+- NumberOfTime30-59DaysPastDueNotWorse: skew=4.257
+- NumberRealEstateLoansOrLines: skew=3.550
+- SeriousDlqin2yrs: skew=3.495
+- DebtRatio: skew=3.243
+- DebtRatio_clipped: skew=3.169
+- RevolvingUtilizationOfUnsecuredLines: skew=2.180
+- DebtRatio_log: skew=1.920
+
+## Importancia de features
+Top 10 por Mutual Information:
+1. RevolvingUtilizationOfUnsecuredLines: 0.036712
+2. NumberOfTimes90DaysLate: 0.030274
+3. NumberOfTime30-59DaysPastDueNotWorse: 0.025170
+4. NumberOfTime60-89DaysPastDueNotWorse: 0.020416
+5. age: 0.007846
+6. NumberRealEstateLoansOrLines: 0.006527
+7. NumberOfDependents: 0.004623
+8. NumberOfOpenCreditLinesAndLoans: 0.004473
+9. DebtRatio: 0.004223
+10. MonthlyIncome: 0.004179
+Top 10 por RandomForest (feature_importances):
+1. RevolvingUtilizationOfUnsecuredLines: 0.163420
+2. Unnamed: 0: 0.142373
+3. DebtRatio: 0.140242
+4. MonthlyIncome: 0.115227
+5. age: 0.105308
+6. NumberOfTimes90DaysLate: 0.090011
+7. NumberOfOpenCreditLinesAndLoans: 0.077113
+8. NumberOfTime30-59DaysPastDueNotWorse: 0.050600
+9. NumberOfTime60-89DaysPastDueNotWorse: 0.043700
+10. NumberOfDependents: 0.035580
+
+## PCA - varianza explicada (primeros 5 componentes)
+- PC1: 0.2302
+- PC2: 0.1868
+- PC3: 0.1037
+- PC4: 0.0850
+- PC5: 0.0713
+
+## Recomendaciones de tratamiento y acciones concretas
+- Imputar MonthlyIncome por mediana y conservar indicador de NA. Considerar winsorize al 99% si hay valores extremos.
+- Aplicar log1p a RevolvingUtilizationOfUnsecuredLines y DebtRatio (ya se creó versión _log en el dataset final).
+- Revisar campos con valores 96/98 en columnas de retrasos y tratarlos como NA o errores de entrada.
+- Para modelado: usar pipelines con StandardScaler + Logistic/RandomForest; probar class_weight o SMOTE por el desbalance.
