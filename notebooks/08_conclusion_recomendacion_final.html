@@ -439,12 +439,11 @@ document.write(`
 Rendimiento Empírico</label><div class="sd-tab-content docutils">
 <p><strong>1. Rendimiento Superior en Nuestros Datos</strong></p>
 <p>En nuestros experimentos comparativos (Notebooks 04–06), la combinación <code class="docutils literal notranslate"><span class="pre">XGBoost</span> <span class="pre">+</span> <span class="pre">SMOTE</span></code> obtuvo consistentemente el <strong>mejor equilibrio entre precisión y recall</strong>, reflejado en el F1-Score más alto entre los modelos evaluados, manteniendo además un AUC-ROC competitivo (~0.86).<br />
-El análisis de umbral (Notebook 07) identificó un punto operativo recomendado alrededor de <strong>0.706</strong> que maximiza el F1-Score en datos de prueba, traduciéndose en una mayor capacidad para identificar morosos sin sacrificar en exceso la precisión.</p>
+El análisis de umbral (Notebook 07) identificó un punto operativo recomendado alrededor de <strong>0.706</strong>, que maximiza el F1-Score en datos de prueba, traduciéndose en una mayor capacidad para identificar morosos sin sacrificar en exceso la precisión.</p>
 </div>
-</div>
-<div class="sd-tab-item docutils">
-<p class="sd-tab-label rubric">Alineación con el Estado del Arte</p>
-<div class="sd-tab-content docutils">
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Alineación con el Estado del Arte</label><div class="sd-tab-content docutils">
 <p><strong>2. Validación por la Literatura Académica</strong></p>
 <p>La evidencia académica respalda a <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> como uno de los algoritmos más efectivos en riesgo crediticio.<br />
 La revisión de <strong>Noriega et al. (2023)</strong> destaca su uso extendido, y aunque <strong>Zedda (2024)</strong> señala que a veces es comparable a la regresión logística, <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> generalmente ofrece ventajas.</p>
@@ -452,27 +451,22 @@ La revisión de <strong>Noriega et al. (2023)</strong> destaca su uso extendido,
 <strong>Dai et al. (2024)</strong> mostraron incrementos sustantivos de <code class="docutils literal notranslate"><span class="pre">recall</span></code> y <code class="docutils literal notranslate"><span class="pre">F1</span></code> con su uso.<br />
 En conjunto, la dupla <code class="docutils literal notranslate"><span class="pre">XGBoost</span> <span class="pre">+</span> <span class="pre">SMOTE</span></code> está bien fundamentada.</p>
 </div>
-</div>
-<div class="sd-tab-item docutils">
-<p class="sd-tab-label rubric">Competitividad de los Resultados</p>
-<div class="sd-tab-content docutils">
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+Competitividad de los Resultados</label><div class="sd-tab-content docutils">
 <p><strong>3. Resultados en Contexto</strong></p>
 <p>Los AUC-ROC reportados en la literatura para <em>credit scoring</em> suelen ubicarse en rangos de <strong>0.85–0.95</strong>.<br />
 Nuestros resultados (<strong>AUC ≈ 0.86</strong>) son consistentes con este panorama.</p>
 <p>El <code class="docutils literal notranslate"><span class="pre">F1-Score</span></code>, por su parte, tiende a ser más modesto por el fuerte desbalance.<br />
 Nuestro <strong>F1 ≈ 0.35</strong>, si bien útil operativamente, deja espacio de mejora mediante ajustes de umbral o calibración, pero se mantiene en un rango razonable en comparación con otros estudios.</p>
 </div>
-</div>
-<div class="sd-tab-item docutils">
-<p class="sd-tab-label rubric">Relevancia de Características</p>
-<div class="sd-tab-content docutils">
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+Relevancia de Características</label><div class="sd-tab-content docutils">
 <p><strong>4. Interpretabilidad Coherente</strong></p>
 <p>Los hallazgos de interpretabilidad de nuestro modelo —mayor peso de señales como el <strong>uso de líneas de crédito</strong> y el <strong>historial de pagos</strong>— son coherentes con lo documentado en la bibliografía.<br />
 Trabajos que combinan ensambles con SHAP, como el de <strong>Yang et al. (2025)</strong>, también resaltan que estas señales son críticas en la probabilidad de <em>default</em>, reforzando la confianza en nuestro modelo.</p>
 </div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
 </div>
 </section>
 <section id="seccion-3-ventajas-y-limitaciones-del-modelo-propuesto">
