@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+
+
+<html lang="es" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Resumen EDA automatizado &#8212; Scoring Crediticio - GiveMeSomeCredit</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../_static/translations.js?v=d190bf04"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reports/eda_insights';</script>
+    <link rel="icon" href="../_static/flavicon.jpg"/>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="es"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Saltar al contenido principal</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Volver arriba</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Advertencia de versión"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../notebooks/01_introduction.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/UninorteLogo.png" class="logo__image only-light" alt="Scoring Crediticio - GiveMeSomeCredit - Home"/>
+    <script>document.write(`<img src="../_static/UninorteLogo.png" class="logo__image only-dark" alt="Scoring Crediticio - GiveMeSomeCredit - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Búsqueda</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../notebooks/01_introduction.html">
+                    01 - Proyecto: Scoring crediticio (GiveMeSomeCredit)
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/02_eda.html">02 - Análisis Exploratorio de Datos (EDA)</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/03_modelado_benchmark.html">03 - Modelado: Benchmark</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/04_balanceo_clases.html">04 - Técnicas de Balanceo de Clases</a></li>
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/05_optimizacion_computacional.html">05 - Optimización Computacional</a></li>
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/06_tuning_hiperparametros.html"><strong>06 — Tuning, Validación e Interpretabilidad</strong></a></li>
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/08_conclusion_recomendacion_final.html">Conclusión y Recomendaciones Finales</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/MrSpain2104/credit_scoring_machine_learning" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Repositorio de origen"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/MrSpain2104/credit_scoring_machine_learning/issues/new?title=Issue%20on%20page%20%2Freports/eda_insights.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Abrir un problema"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Descarga esta pagina">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/reports/eda_insights.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Descargar archivo fuente"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimir en PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Modo de pantalla completa"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="claro/oscuro" aria-label="claro/oscuro" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Resumen EDA automatizado</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenido </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#origen-del-dataset">Origen del dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ratio-de-clases">Ratio de clases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checks-basicos">Checks básicos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#valores-faltantes-top">Valores faltantes (top)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#outliers-iqr-top-10-variables-con-mas-outliers">Outliers (IQR) - top 10 variables con más outliers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#skewness-top-variables-sesgadas">Skewness (top variables sesgadas)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importancia-de-features">Importancia de features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pca-varianza-explicada-primeros-5-componentes">PCA - varianza explicada (primeros 5 componentes)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recomendaciones-de-tratamiento-y-acciones-concretas">Recomendaciones de tratamiento y acciones concretas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accion-regenerado-processed-for-modeling-csv">Acción: Regenerado processed_for_modeling.csv</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="resumen-eda-automatizado">
+<h1>Resumen EDA automatizado<a class="headerlink" href="#resumen-eda-automatizado" title="Link to this heading">#</a></h1>
+<section id="origen-del-dataset">
+<h2>Origen del dataset<a class="headerlink" href="#origen-del-dataset" title="Link to this heading">#</a></h2>
+<p>trainingData cargado desde: C:\MachineLearningPG\data\processed_for_modeling.csv</p>
+</section>
+<section id="ratio-de-clases">
+<h2>Ratio de clases<a class="headerlink" href="#ratio-de-clases" title="Link to this heading">#</a></h2>
+<p>Total de observaciones (train): 150,000
+Proporción de casos positivos (SeriousDlqin2yrs=1): 0.0668 (10,026 casos)
+{0: 139974, 1: 10026}</p>
+</section>
+<section id="checks-basicos">
+<h2>Checks básicos<a class="headerlink" href="#checks-basicos" title="Link to this heading">#</a></h2>
+<p>Número de columnas: 11
+Número de filas: 150,000</p>
+</section>
+<section id="valores-faltantes-top">
+<h2>Valores faltantes (top)<a class="headerlink" href="#valores-faltantes-top" title="Link to this heading">#</a></h2>
+<p>No se detectaron valores faltantes.</p>
+</section>
+<section id="outliers-iqr-top-10-variables-con-mas-outliers">
+<h2>Outliers (IQR) - top 10 variables con más outliers<a class="headerlink" href="#outliers-iqr-top-10-variables-con-mas-outliers" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>DebtRatio: 31311 outliers (IQR)</p></li>
+<li><p>NumberOfTime30-59DaysPastDueNotWorse: 23982 outliers (IQR)</p></li>
+<li><p>NumberOfDependents: 13336 outliers (IQR)</p></li>
+<li><p>SeriousDlqin2yrs: 10026 outliers (IQR)</p></li>
+<li><p>MonthlyIncome: 9149 outliers (IQR)</p></li>
+<li><p>NumberOfTimes90DaysLate: 8338 outliers (IQR)</p></li>
+<li><p>NumberOfTime60-89DaysPastDueNotWorse: 7604 outliers (IQR)</p></li>
+<li><p>NumberOfOpenCreditLinesAndLoans: 3980 outliers (IQR)</p></li>
+<li><p>NumberRealEstateLoansOrLines: 793 outliers (IQR)</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines: 763 outliers (IQR)</p></li>
+</ul>
+</section>
+<section id="skewness-top-variables-sesgadas">
+<h2>Skewness (top variables sesgadas)<a class="headerlink" href="#skewness-top-variables-sesgadas" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>MonthlyIncome: skew=127.120</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines: skew=97.631</p></li>
+<li><p>DebtRatio: skew=95.157</p></li>
+<li><p>NumberOfTime60-89DaysPastDueNotWorse: skew=23.332</p></li>
+<li><p>NumberOfTimes90DaysLate: skew=23.087</p></li>
+<li><p>NumberOfTime30-59DaysPastDueNotWorse: skew=22.597</p></li>
+<li><p>NumberRealEstateLoansOrLines: skew=3.482</p></li>
+<li><p>SeriousDlqin2yrs: skew=3.469</p></li>
+<li><p>NumberOfDependents: skew=1.626</p></li>
+<li><p>NumberOfOpenCreditLinesAndLoans: skew=1.215</p></li>
+</ul>
+</section>
+<section id="importancia-de-features">
+<h2>Importancia de features<a class="headerlink" href="#importancia-de-features" title="Link to this heading">#</a></h2>
+<p>Top 10 por Mutual Information:</p>
+<ol class="arabic simple">
+<li><p>RevolvingUtilizationOfUnsecuredLines_log: 0.037102</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines: 0.036953</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines_clipped: 0.036718</p></li>
+<li><p>NumberOfTimes90DaysLate: 0.036204</p></li>
+<li><p>NumberOfTime30-59DaysPastDueNotWorse: 0.033708</p></li>
+<li><p>NumberOfTime60-89DaysPastDueNotWorse: 0.025062</p></li>
+<li><p>NumberOfDependents: 0.010072</p></li>
+<li><p>age: 0.007214</p></li>
+<li><p>NumberRealEstateLoansOrLines: 0.005896</p></li>
+<li><p>DebtRatio_log: 0.004193
+Top 10 por RandomForest (feature_importances):</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines: 0.163420</p></li>
+<li><p>Unnamed: 0: 0.142373</p></li>
+<li><p>DebtRatio: 0.140242</p></li>
+<li><p>MonthlyIncome: 0.115227</p></li>
+<li><p>age: 0.105308</p></li>
+<li><p>NumberOfTimes90DaysLate: 0.090011</p></li>
+<li><p>NumberOfOpenCreditLinesAndLoans: 0.077113</p></li>
+<li><p>NumberOfTime30-59DaysPastDueNotWorse: 0.050600</p></li>
+<li><p>NumberOfTime60-89DaysPastDueNotWorse: 0.043700</p></li>
+<li><p>NumberOfDependents: 0.035580</p></li>
+</ol>
+</section>
+<section id="pca-varianza-explicada-primeros-5-componentes">
+<h2>PCA - varianza explicada (primeros 5 componentes)<a class="headerlink" href="#pca-varianza-explicada-primeros-5-componentes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>PC1: 0.2995</p></li>
+<li><p>PC2: 0.1537</p></li>
+<li><p>PC3: 0.1236</p></li>
+<li><p>PC4: 0.1018</p></li>
+<li><p>PC5: 0.1001</p></li>
+</ul>
+</section>
+<section id="recomendaciones-de-tratamiento-y-acciones-concretas">
+<h2>Recomendaciones de tratamiento y acciones concretas<a class="headerlink" href="#recomendaciones-de-tratamiento-y-acciones-concretas" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Imputar MonthlyIncome por mediana y conservar indicador de NA. Considerar winsorize al 99% si hay valores extremos.</p></li>
+<li><p>Aplicar log1p a RevolvingUtilizationOfUnsecuredLines y DebtRatio (ya se creó versión _log en el dataset final).</p></li>
+<li><p>Revisar campos con valores 96/98 en columnas de retrasos y tratarlos como NA o errores de entrada.</p></li>
+<li><p>Para modelado: usar pipelines con StandardScaler + Logistic/RandomForest; probar class_weight o SMOTE por el desbalance.</p></li>
+</ul>
+<p>Top 10 por RandomForest (recalculado):</p>
+<ol class="arabic simple">
+<li><p>RevolvingUtilizationOfUnsecuredLines_clipped: 0.130508</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines_log: 0.117266</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines: 0.113984</p></li>
+<li><p>age: 0.080542</p></li>
+<li><p>MonthlyIncome: 0.077271</p></li>
+<li><p>NumberOfTime30-59DaysPastDueNotWorse: 0.070369</p></li>
+<li><p>DebtRatio: 0.069263</p></li>
+<li><p>DebtRatio_log: 0.068883</p></li>
+<li><p>DebtRatio_clipped: 0.068794</p></li>
+<li><p>NumberOfTimes90DaysLate: 0.066480</p></li>
+</ol>
+</section>
+<section id="accion-regenerado-processed-for-modeling-csv">
+<h2>Acción: Regenerado processed_for_modeling.csv<a class="headerlink" href="#accion-regenerado-processed-for-modeling-csv" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Dataset regenerado desde: C:\MachineLearningPG\Recursos\cs-training.csv con imputaciones (MonthlyIncome mediana, NumberOfDependents moda/0) y 96/98 tratados como NA en columnas de atraso.</p></li>
+<li><p>Nuevas dimensiones: 150,000 filas x 18 columnas.</p></li>
+</ul>
+<p>Top 10 por Mutual Information (recalculado):</p>
+<ol class="arabic simple">
+<li><p>RevolvingUtilizationOfUnsecuredLines_log: 0.036661</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines: 0.036265</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines_clipped: 0.036140</p></li>
+<li><p>NumberOfTimes90DaysLate: 0.034845</p></li>
+<li><p>NumberOfTime30-59DaysPastDueNotWorse: 0.032656</p></li>
+<li><p>NumberOfTime60-89DaysPastDueNotWorse: 0.025764</p></li>
+<li><p>NumberOfDependents: 0.011158</p></li>
+<li><p>MonthlyIncome_na: 0.010531</p></li>
+<li><p>age: 0.007981</p></li>
+<li><p>NumberRealEstateLoansOrLines: 0.007284</p></li>
+</ol>
+<p>Top 10 por RandomForest (recalculado, sin Unnamed: 0):</p>
+<ol class="arabic simple">
+<li><p>RevolvingUtilizationOfUnsecuredLines_clipped: 0.133233</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines_log: 0.122832</p></li>
+<li><p>RevolvingUtilizationOfUnsecuredLines: 0.111548</p></li>
+<li><p>age: 0.081033</p></li>
+<li><p>MonthlyIncome: 0.074667</p></li>
+<li><p>DebtRatio: 0.069405</p></li>
+<li><p>DebtRatio_log: 0.068865</p></li>
+<li><p>DebtRatio_clipped: 0.068078</p></li>
+<li><p>NumberOfTime30-59DaysPastDueNotWorse: 0.066866</p></li>
+<li><p>NumberOfTimes90DaysLate: 0.061990</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./reports"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenido
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#origen-del-dataset">Origen del dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ratio-de-clases">Ratio de clases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checks-basicos">Checks básicos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#valores-faltantes-top">Valores faltantes (top)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#outliers-iqr-top-10-variables-con-mas-outliers">Outliers (IQR) - top 10 variables con más outliers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#skewness-top-variables-sesgadas">Skewness (top variables sesgadas)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importancia-de-features">Importancia de features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pca-varianza-explicada-primeros-5-componentes">PCA - varianza explicada (primeros 5 componentes)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recomendaciones-de-tratamiento-y-acciones-concretas">Recomendaciones de tratamiento y acciones concretas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accion-regenerado-processed-for-modeling-csv">Acción: Regenerado processed_for_modeling.csv</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Por Andrés España | Omar Medina
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  © 2025 Andrés España | Universidad del Norte
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

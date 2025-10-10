@@ -1,0 +1,2543 @@
+
+<!DOCTYPE html>
+
+
+<html lang="es" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>04 - Técnicas de Balanceo de Clases &#8212; Scoring Crediticio - GiveMeSomeCredit</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../_static/translations.js?v=d190bf04"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/04_balanceo_clases';</script>
+    <link rel="icon" href="../_static/flavicon.jpg"/>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+    <link rel="next" title="05 - Optimización Computacional" href="05_optimizacion_computacional.html" />
+    <link rel="prev" title="03 - Modelado: Benchmark" href="03_modelado_benchmark.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="es"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Saltar al contenido principal</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Volver arriba</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Advertencia de versión"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="01_introduction.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/UninorteLogo.png" class="logo__image only-light" alt="Scoring Crediticio - GiveMeSomeCredit - Home"/>
+    <script>document.write(`<img src="../_static/UninorteLogo.png" class="logo__image only-dark" alt="Scoring Crediticio - GiveMeSomeCredit - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Búsqueda</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="01_introduction.html">
+                    01 - Proyecto: Scoring crediticio (GiveMeSomeCredit)
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="02_eda.html">02 - Análisis Exploratorio de Datos (EDA)</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="03_modelado_benchmark.html">03 - Modelado: Benchmark</a></li>
+
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">04 - Técnicas de Balanceo de Clases</a></li>
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="05_optimizacion_computacional.html">05 - Optimización Computacional</a></li>
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="06_tuning_hiperparametros.html"><strong>06 — Tuning, Validación e Interpretabilidad</strong></a></li>
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="08_conclusion_recomendacion_final.html">Conclusión y Recomendaciones Finales</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/MrSpain2104/credit_scoring_machine_learning" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Repositorio de origen"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/MrSpain2104/credit_scoring_machine_learning/issues/new?title=Issue%20on%20page%20%2Fnotebooks/04_balanceo_clases.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Abrir un problema"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Descarga esta pagina">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/04_balanceo_clases.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Descargar archivo fuente"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimir en PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Modo de pantalla completa"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="claro/oscuro" aria-label="claro/oscuro" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>04 - Técnicas de Balanceo de Clases</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenido </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">04 - Técnicas de Balanceo de Clases</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluacion-del-balanceo-por-ponderacion-de-clases">Evaluación del Balanceo por Ponderación de Clases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helpers">Helpers</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#seccion-1-ponderacion-de-clases-y-baselines">Sección 1: Ponderación de clases y baselines</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Evaluación del Balanceo por Ponderación de Clases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-resultados-de-la-seccion-1-ponderacion-de-clases">Análisis de Resultados de la Sección 1: Ponderación de Clases</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#se-resuelve-el-problema-del-bajo-recall">Se Resuelve el Problema del Bajo <code class="docutils literal notranslate"><span class="pre">Recall</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#observacion-interesante-el-comportamiento-de-randomforest">Observación Interesante: El Comportamiento de RandomForest</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#veredicto-preliminar">Veredicto Preliminar</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#seccion-2-balanceo-por-oversampling-con-smote">Sección 2: Balanceo por Oversampling con SMOTE</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metodologia-de-evaluacion">Metodología de Evaluación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-resultados-de-la-seccion-2-smote">Análisis de Resultados de la Sección 2: SMOTE</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#randomforest-y-xgboost-responden-mejor-al-oversampling">RandomForest y XGBoost Responden Mejor al Oversampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#observacion-critica-el-colapso-de-linearsvc">Observación Crítica: El Colapso de LinearSVC</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Veredicto Preliminar</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#seccion-3-balanceo-por-oversampling-con-adasyn">Sección 3: Balanceo por Oversampling con ADASYN</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-resultados-de-la-seccion-3-adasyn">Análisis de Resultados de la Sección 3: ADASYN</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion-principal-adasyn-no-supera-a-smote-en-este-dataset">Conclusión Principal: ADASYN no Supera a SMOTE en este Dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validacion-de-la-hipotesis-sobre-linearsvc">Validación de la Hipótesis sobre LinearSVC</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Veredicto Preliminar</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#seccion-4-analisis-comparativo-final-y-conclusiones">Sección 4: Análisis Comparativo Final y Conclusiones</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metodologia-de-analisis">Metodología de Análisis</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion-del-notebook-4-tecnicas-de-balanceo">Conclusión del Notebook 4: Técnicas de Balanceo</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hallazgos-principales">Hallazgos Principales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estrategia-ganadora-y-candidatos-seleccionados">Estrategia Ganadora y Candidatos Seleccionados</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximos-pasos">Próximos Pasos:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hacia-el-notebook-5-optimizacion-computacional"><strong>Hacia el Notebook 5: Optimización Computacional</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="tecnicas-de-balanceo-de-clases">
+<h1>04 - Técnicas de Balanceo de Clases<a class="headerlink" href="#tecnicas-de-balanceo-de-clases" title="Link to this heading">#</a></h1>
+<p>Este notebook implementa y compara sistemáticamente tres familias de técnicas de balanceo de clases en nuestro problema de riesgo crediticio desbalanceado. Evitaremos realizar tuning y optimización computacional aquí. El objetivo es identificar qué técnica y modelo ofrecen el mejor equilibrio entre encontrar morosos (alto recall) y no clasificar incorrectamente a buenos (precision).</p>
+<p>Secciones:</p>
+<ol class="arabic simple">
+<li><p>Ponderación de clases (class_weight/scale_pos_weight)</p></li>
+<li><p>Oversampling con SMOTE (en una muestra estratificada 30%)</p></li>
+<li><p>Oversampling con ADASYN (mismas condiciones que SMOTE)</p></li>
+<li><p>Tabla comparativa final y análisis</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Librerías básicas para cargue y uso de dataset</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianNB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearSVC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">average_precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">StratifiedKFold</span><span class="p">,</span> <span class="n">cross_val_predict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.over_sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">SMOTE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">ImbPipeline</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">ROOT</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">MachineLearningPG&#39;</span>
+<span class="n">DATA_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ROOT</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="n">REPORTS_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ROOT</span><span class="p">,</span> <span class="s1">&#39;reports&#39;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">proc_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">,</span> <span class="s1">&#39;processed_for_modeling.csv&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">proc_path</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;Processed file not found: </span><span class="si">{</span><span class="n">proc_path</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">proc_path</span><span class="p">)</span>
+<span class="c1"># Quitar columnas índice si existieran</span>
+<span class="k">if</span> <span class="s1">&#39;Unnamed: 0&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Unnamed: 0&#39;</span><span class="p">])</span>
+
+<span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;SeriousDlqin2yrs&#39;</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">target</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Dataset shape:&#39;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s1">&#39;Target distribution:&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+<span class="n">have_xgb</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">scale_pos_weight</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xgb</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
+    <span class="n">have_xgb</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">neg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">pos</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">scale_pos_weight</span> <span class="o">=</span> <span class="n">neg</span> <span class="o">/</span> <span class="n">pos</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;XGBoost disponible. scale_pos_weight =&#39;</span><span class="p">,</span> <span class="n">scale_pos_weight</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">have_xgb</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;XGBoost no disponible; se omitirá XGBoost. Error:&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dataset shape: (150000, 16) Target distribution: {0: 139974, 1: 10026}
+XGBoost disponible. scale_pos_weight = 13.961101137043686
+</pre></div>
+</div>
+</div>
+</div>
+<section id="evaluacion-del-balanceo-por-ponderacion-de-clases">
+<h2>Evaluación del Balanceo por Ponderación de Clases<a class="headerlink" href="#evaluacion-del-balanceo-por-ponderacion-de-clases" title="Link to this heading">#</a></h2>
+<p>Nuestra primera estrategia será evaluar la técnica de balanceo más eficiente computacionalmente: la <strong>(Class Weighting)</strong>. Este método no modifica el dataset, sino que ajusta el algoritmo de aprendizaje para que penalice con mayor severidad los errores cometidos sobre la clase minoritaria.</p>
+<p>Para llevar a cabo una comparación justa y directa, el siguiente bloque de código prepara dos grupos de estimadores:</p>
+<ol class="arabic simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">base_estimators</span></code></strong>: Un diccionario que contiene las versiones estándar (sin balancear) de todos los modelos de nuestro benchmark. Estos servirán como el «baseline» para medir el impacto de las técnicas de balanceo dentro de este mismo notebook.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">weighted_estimators</span></code></strong>: Un diccionario que contiene únicamente los modelos que soportan de forma nativa la ponderación de clases. Se utiliza el parámetro <code class="docutils literal notranslate"><span class="pre">class_weight='balanced'</span></code> para los modelos de <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> y el equivalente <code class="docutils literal notranslate"><span class="pre">scale_pos_weight</span></code> para <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code>.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pipeline de Estimadores BASE (sin ponderación)</span>
+<span class="n">base_estimators</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Logistic_L2&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;lbfgs&#39;</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
+    <span class="p">]),</span>
+    <span class="s1">&#39;Logistic_L1&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
+    <span class="p">]),</span>
+    <span class="s1">&#39;RandomForest&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="p">]),</span>
+    <span class="s1">&#39;KNN&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+    <span class="p">]),</span>
+    <span class="s1">&#39;GaussianNB&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">GaussianNB</span><span class="p">())</span>
+    <span class="p">]),</span>
+    <span class="s1">&#39;DecisionTree&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
+    <span class="p">]),</span>
+    <span class="s1">&#39;LinearSVC&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">LinearSVC</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
+    <span class="p">])</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="n">have_xgb</span><span class="p">:</span>
+    <span class="n">base_estimators</span><span class="p">[</span><span class="s1">&#39;XGBoost&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">XGBClassifier</span><span class="p">(</span>
+            <span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+            <span class="n">max_depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">subsample</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+            <span class="n">colsample_bytree</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+            <span class="n">reg_lambda</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+            <span class="n">tree_method</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">,</span>
+            <span class="n">eval_metric</span><span class="o">=</span><span class="s1">&#39;logloss&#39;</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">))</span>
+    <span class="p">])</span>
+
+<span class="c1"># Estimadores PONDERADOS (class_weight/scale_pos_weight)</span>
+<span class="n">weighted_estimators</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Logistic_L2_weighted&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;lbfgs&#39;</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="s1">&#39;balanced&#39;</span><span class="p">))</span>
+    <span class="p">]),</span>
+    <span class="s1">&#39;Logistic_L1_weighted&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span><span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="s1">&#39;balanced&#39;</span><span class="p">))</span>
+    <span class="p">]),</span>
+    <span class="s1">&#39;RandomForest_weighted&#39;</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="s1">&#39;balanced&#39;</span><span class="p">))</span>
+    <span class="p">]),</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="n">have_xgb</span><span class="p">:</span>
+    <span class="n">weighted_estimators</span><span class="p">[</span><span class="s1">&#39;XGBoost_weighted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+        <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">XGBClassifier</span><span class="p">(</span>
+            <span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+            <span class="n">max_depth</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">subsample</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+            <span class="n">colsample_bytree</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+            <span class="n">reg_lambda</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+            <span class="n">tree_method</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">,</span>
+            <span class="n">eval_metric</span><span class="o">=</span><span class="s1">&#39;logloss&#39;</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">verbosity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">scale_pos_weight</span><span class="o">=</span><span class="n">scale_pos_weight</span>
+        <span class="p">))</span>
+    <span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Base estimators:&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">base_estimators</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Weighted estimators:&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">weighted_estimators</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Base estimators: [&#39;Logistic_L2&#39;, &#39;Logistic_L1&#39;, &#39;RandomForest&#39;, &#39;KNN&#39;, &#39;GaussianNB&#39;, &#39;DecisionTree&#39;, &#39;LinearSVC&#39;, &#39;XGBoost&#39;]
+Weighted estimators: [&#39;Logistic_L2_weighted&#39;, &#39;Logistic_L1_weighted&#39;, &#39;RandomForest_weighted&#39;, &#39;XGBoost_weighted&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="helpers">
+<h2>Helpers<a class="headerlink" href="#helpers" title="Link to this heading">#</a></h2>
+<p>En esta sección definiremos algunas funciones de ayuda, que conformarán el núcleo de nuestro framework de evaluación.</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">get_cv_scores</span></code></strong>: Esta es la función principal de <strong>cómputo</strong>. Utiliza validación cruzada para generar predicciones Out-of-Fold y calcula un conjunto completo de métricas de rendimiento (AUC, AP, F1-Score, etc.). Está diseñada para ser compatible con cualquier clasificador de <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code>, adaptándose a si el modelo devuelve probabilidades o scores de decisión. La función <strong>retorna un diccionario</strong> con los resultados, sin imprimir nada.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pretty_print_metrics</span></code></strong>: Se encarga de la <strong>presentación</strong> de los resultados, las metricas.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">show_and_save_confusion</span></code></strong>: Se especializa en <strong>visualizar y guardar</strong> la matriz de confusión, manteniendo un estilo visual consistente (<code class="docutils literal notranslate"><span class="pre">cmap='Reds'</span></code>) en todos los gráficos.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">skf</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">VINOTINTO_CMAP</span> <span class="o">=</span> <span class="s1">&#39;Reds&#39;</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">show_and_save_confusion</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">))</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">VINOTINTO_CMAP</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Actual&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Confusion Matrix - </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">cm_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;confusion_matrix_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">.png&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">cm_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">cm_path</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_cv_scores</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">proba</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">proba</span> <span class="o">=</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">skf</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;predict_proba&#39;</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">skf</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;decision_function&#39;</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">proba</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">scores</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">cross_val_predict</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">skf</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;predict&#39;</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">auc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">ap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">proba</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">scores</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">s</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+            <span class="n">proba</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="p">(</span><span class="n">proba</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">auc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">proba</span><span class="p">))</span>
+        <span class="n">ap</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">average_precision_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">proba</span><span class="p">))</span>
+
+    <span class="n">recall</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">report_str</span> <span class="o">=</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">report_dict</span> <span class="o">=</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">output_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">report_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;auc&#39;</span><span class="p">:</span> <span class="n">auc</span><span class="p">,</span>
+        <span class="s1">&#39;ap&#39;</span><span class="p">:</span> <span class="n">ap</span><span class="p">,</span>
+        <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">,</span>
+        <span class="s1">&#39;recall&#39;</span><span class="p">:</span> <span class="n">recall</span><span class="p">,</span>
+        <span class="s1">&#39;f1&#39;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+        <span class="s1">&#39;cm&#39;</span><span class="p">:</span> <span class="n">cm</span><span class="p">,</span>
+        <span class="s1">&#39;report&#39;</span><span class="p">:</span> <span class="n">report_str</span><span class="p">,</span>
+        <span class="s1">&#39;report_dict&#39;</span><span class="p">:</span> <span class="n">report_dict</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pretty_print_metrics</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">technique</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Imprime métricas directamente (sin deduplicación para permitir re-ejecuciones)</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">technique</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">technique</span> <span class="k">else</span> <span class="n">name</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Model: </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;AUC: </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;auc&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | AP: </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ap&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Classification Report:</span><span class="se">\n</span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;report&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error al imprimir métricas:&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="seccion-1-ponderacion-de-clases-y-baselines">
+<h1>Sección 1: Ponderación de clases y baselines<a class="headerlink" href="#seccion-1-ponderacion-de-clases-y-baselines" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>Evaluación del Balanceo por Ponderación de Clases<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Iniciamos nuestras pruebas evaluando la técnica de balanceo más directa y computacionalmente eficiente: <strong>class_weight=”balanced”</strong>. Este método ajusta el algoritmo de aprendizaje para que asigne una mayor importancia a los errores cometidos en la clase minoritaria (impago).</p>
+<p><strong>Evaluación de Modelos Ponderados:</strong> A continuación, se evalúan los modelos que soportan <code class="docutils literal notranslate"><span class="pre">class_weight</span></code> o <code class="docutils literal notranslate"><span class="pre">scale_pos_weight</span></code>. Para estos, los resultados <strong>se muestran en detalle</strong>, incluyendo el reporte de clasificación completo y la matriz de confusión.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">section1_results</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculando baselines...&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">est</span> <span class="ow">in</span> <span class="n">base_estimators</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">get_cv_scores</span><span class="p">(</span><span class="n">est</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">section1_results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;baseline::</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Baseline error en&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculando modelos ponderados...&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">est</span> <span class="ow">in</span> <span class="n">weighted_estimators</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">get_cv_scores</span><span class="p">(</span><span class="n">est</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">section1_results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;weighted::</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="n">pretty_print_metrics</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">technique</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">)</span>
+        <span class="n">show_and_save_confusion</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;cm&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;weighted_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Weighted error en&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="s1">&#39;sec1_weighting_and_baselines.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">section1_results</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="s1">&#39;tolist&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saved Section 1 results&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculando baselines (silencioso)...
+Calculando modelos ponderados...
+Calculando modelos ponderados...
+Model: weighted:Logistic_L2_weighted
+AUC: 0.8544 | AP: 0.3779
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9780    0.8003    0.8803    139974
+           1     0.2116    0.7483    0.3299     10026
+
+    accuracy                         0.7968    150000
+   macro avg     0.5948    0.7743    0.6051    150000
+weighted avg     0.9267    0.7968    0.8435    150000
+
+Model: weighted:Logistic_L2_weighted
+AUC: 0.8544 | AP: 0.3779
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9780    0.8003    0.8803    139974
+           1     0.2116    0.7483    0.3299     10026
+
+    accuracy                         0.7968    150000
+   macro avg     0.5948    0.7743    0.6051    150000
+weighted avg     0.9267    0.7968    0.8435    150000
+</pre></div>
+</div>
+<img alt="../_images/3a88c11e19e789a2f7ec775c8eecff36bd73fda3b1ee20786c0741e9972db1a3.png" src="../_images/3a88c11e19e789a2f7ec775c8eecff36bd73fda3b1ee20786c0741e9972db1a3.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model: weighted:Logistic_L1_weighted
+AUC: 0.8544 | AP: 0.3779
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9779    0.8006    0.8804    139974
+           1     0.2118    0.7480    0.3301     10026
+
+    accuracy                         0.7971    150000
+   macro avg     0.5949    0.7743    0.6053    150000
+weighted avg     0.9267    0.7971    0.8437    150000
+</pre></div>
+</div>
+<img alt="../_images/3cea5c7a8dcc48224dfcf2f8fba71941f848be1b5fa847975544113ce705c0d8.png" src="../_images/3cea5c7a8dcc48224dfcf2f8fba71941f848be1b5fa847975544113ce705c0d8.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model: weighted:RandomForest_weighted
+AUC: 0.8356 | AP: 0.3260
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9419    0.9901    0.9654    139974
+           1     0.5175    0.1475    0.2296     10026
+
+    accuracy                         0.9338    150000
+   macro avg     0.7297    0.5688    0.5975    150000
+weighted avg     0.9135    0.9338    0.9162    150000
+</pre></div>
+</div>
+<img alt="../_images/01939674256510b2a1da3d0f055d0d96311135b2c7175394caf6688ad2952d5d.png" src="../_images/01939674256510b2a1da3d0f055d0d96311135b2c7175394caf6688ad2952d5d.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model: weighted:XGBoost_weighted
+AUC: 0.8557 | AP: 0.3758
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9764    0.8290    0.8967    139974
+           1     0.2317    0.7197    0.3505     10026
+
+    accuracy                         0.8217    150000
+   macro avg     0.6040    0.7744    0.6236    150000
+weighted avg     0.9266    0.8217    0.8602    150000
+</pre></div>
+</div>
+<img alt="../_images/26f353ba7c26c69e7b2fc753b971315af092e9d14422293cd8c9e0b39ab21744.png" src="../_images/26f353ba7c26c69e7b2fc753b971315af092e9d14422293cd8c9e0b39ab21744.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved Section 1 results
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="analisis-de-resultados-de-la-seccion-1-ponderacion-de-clases">
+<h2>Análisis de Resultados de la Sección 1: Ponderación de Clases<a class="headerlink" href="#analisis-de-resultados-de-la-seccion-1-ponderacion-de-clases" title="Link to this heading">#</a></h2>
+<section id="se-resuelve-el-problema-del-bajo-recall">
+<h3>Se Resuelve el Problema del Bajo <code class="docutils literal notranslate"><span class="pre">Recall</span></code><a class="headerlink" href="#se-resuelve-el-problema-del-bajo-recall" title="Link to this heading">#</a></h3>
+<p>El objetivo principal de esta sección era solucionar el bajísimo <code class="docutils literal notranslate"><span class="pre">recall</span></code> para la clase minoritaria (impago) que observamos en el benchmark inicial. Los resultados confirman un <strong>éxito rotundo</strong> en este aspecto, especialmente para los modelos lineales y XGBoost:</p>
+<ul class="simple">
+<li><p><strong>Logistic Regression (L1/L2):</strong> El <code class="docutils literal notranslate"><span class="pre">recall</span></code> para la clase <code class="docutils literal notranslate"><span class="pre">1</span></code> (impago) <strong>aumentó drásticamente de ~0.16 a un impresionante ~0.75</strong>. Esto significa que el modelo ahora es capaz de identificar correctamente al <strong>75% de todos los clientes que realmente incurrirán en impago</strong>, un salto masivo desde el 16% anterior.</p></li>
+<li><p><strong>XGBoost:</strong> De manera similar, su <code class="docutils literal notranslate"><span class="pre">recall</span></code> para la clase <code class="docutils literal notranslate"><span class="pre">1</span></code> se disparó a <strong>~0.72 (72%)</strong>.</p></li>
+</ul>
+<p>A cambio de esta enorme ganancia en sensibilidad (recall), la <code class="docutils literal notranslate"><span class="pre">precision</span></code> ha disminuido, lo que era esperado. El <strong>F1-Score</strong> para la clase positiva se sitúa ahora en torno a <strong>0.33 - 0.35</strong> para estos modelos, estableciendo un nuevo y mucho más útil baseline de rendimiento.</p>
+</section>
+<section id="observacion-interesante-el-comportamiento-de-randomforest">
+<h3>Observación Interesante: El Comportamiento de RandomForest<a class="headerlink" href="#observacion-interesante-el-comportamiento-de-randomforest" title="Link to this heading">#</a></h3>
+<p>A diferencia de los otros modelos, <code class="docutils literal notranslate"><span class="pre">RandomForest_weighted</span></code> no respondió tan positivamente a la ponderación de clases. Su <code class="docutils literal notranslate"><span class="pre">recall</span></code> para la clase <code class="docutils literal notranslate"><span class="pre">1</span></code> se mantuvo bajo (0.1475), y su F1-Score (0.2296) es significativamente inferior al de la Regresión Logística y XGBoost. Esto podría sugerir que, para este dataset, los modelos basados en árboles como Random Forest podrían beneficiarse más de técnicas que modifican la distribución de los datos (como SMOTE/ADASYN) en lugar de una simple ponderación de errores.</p>
+</section>
+<section id="veredicto-preliminar">
+<h3>Veredicto Preliminar<a class="headerlink" href="#veredicto-preliminar" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Técnica Exitosa:</strong> La ponderación de clases es una técnica <strong>extremadamente efectiva y rápida</strong> para forzar a los modelos a prestar atención a la clase minoritaria.</p></li>
+<li><p><strong>Modelos Líderes:</strong> <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code> y <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> emergen como los claros ganadores de esta sección, logrando el mejor equilibrio entre <code class="docutils literal notranslate"><span class="pre">recall</span></code> y <code class="docutils literal notranslate"><span class="pre">precision</span></code>, reflejado en un F1-Score superior (~0.35).</p></li>
+<li><p><strong>Nuevo Baseline:</strong> Hemos establecido un nuevo baseline de F1-Score de <strong>~0.35</strong>. El objetivo de las siguientes secciones (SMOTE y ADASYN) será superar este valor.</p></li>
+</ol>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="seccion-2-balanceo-por-oversampling-con-smote">
+<h1>Sección 2: Balanceo por Oversampling con SMOTE<a class="headerlink" href="#seccion-2-balanceo-por-oversampling-con-smote" title="Link to this heading">#</a></h1>
+<p>Ahora evaluaremos una técnica más avanzada que modifica directamente la distribución de los datos: <strong>SMOTE (Synthetic Minority Over-sampling Technique)</strong>. El objetivo de SMOTE es crear nuevos ejemplos «sintéticos» de la clase minoritaria para balancear el conjunto de entrenamiento.</p>
+<section id="metodologia-de-evaluacion">
+<h2>Metodología de Evaluación<a class="headerlink" href="#metodologia-de-evaluacion" title="Link to this heading">#</a></h2>
+<p>Para asegurar la validez de nuestros resultados y gestionar el costo computacional de esta técnica, se han tomado dos consideraciones clave:</p>
+<ol class="arabic simple">
+<li><p><strong>Prevención de Fuga de Datos (Data Leakage):</strong> La implementación de SMOTE se realiza <strong>dentro de un <code class="docutils literal notranslate"><span class="pre">imblearn.pipeline.Pipeline</span></code></strong>. Este paso garantiza que el oversampling se aplique únicamente a los datos de entrenamiento <em>dentro de cada fold de la validación cruzada</em>. Esto previene que el modelo se evalúe con información sintética, asegurando que las métricas reflejen un rendimiento realista en datos no vistos.</p></li>
+<li><p><strong>Optimización del Tiempo de Ejecución:</strong> Dado que SMOTE puede ser computacionalmente intensivo, todos los experimentos en esta sección se realizarán sobre una <strong>muestra estratificada del 30%</strong> del conjunto de datos completo. Esto nos permite evaluar el impacto de la técnica de manera eficiente sin sacrificar la representatividad de la distribución de clases original.</p></li>
+</ol>
+<p>A continuación, se evaluarán todos los modelos base en combinación con SMOTE. El objetivo es determinar si esta técnica de oversampling puede superar el F1-Score de ~0.35 obtenido en la sección anterior con la ponderación de clases.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Xs</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Subset (30%):&#39;</span><span class="p">,</span> <span class="n">Xs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s1">&#39;Target dist:&#39;</span><span class="p">,</span> <span class="n">ys</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+<span class="n">smote_results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">est</span> <span class="ow">in</span> <span class="n">base_estimators</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Extraer scaler y clf de scikit Pipeline</span>
+        <span class="n">scaler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">clf</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">est</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">step_name</span><span class="p">,</span> <span class="n">step_obj</span> <span class="ow">in</span> <span class="n">est</span><span class="o">.</span><span class="n">steps</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step_obj</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">):</span>
+                    <span class="n">scaler</span> <span class="o">=</span> <span class="n">step_obj</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">clf</span> <span class="o">=</span> <span class="n">step_obj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">clf</span> <span class="o">=</span> <span class="n">est</span>
+        <span class="n">imb_steps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">scaler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">imb_steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">scaler</span><span class="p">))</span>
+        <span class="n">imb_steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;smote&#39;</span><span class="p">,</span> <span class="n">SMOTE</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)))</span>
+        <span class="n">imb_steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">clf</span><span class="p">))</span>
+        <span class="n">pipe</span> <span class="o">=</span> <span class="n">ImbPipeline</span><span class="p">(</span><span class="n">imb_steps</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Evaluando SMOTE (CV) para&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">get_cv_scores</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
+        <span class="n">smote_results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="n">pretty_print_metrics</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">technique</span><span class="o">=</span><span class="s1">&#39;smote&#39;</span><span class="p">)</span>
+        <span class="n">show_and_save_confusion</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;cm&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;smote_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Error SMOTE&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="s1">&#39;sec2_smote_cv.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">smote_results</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="s1">&#39;tolist&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saved Section 2 (SMOTE) results&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Subset (30%): (45000, 16) Target dist: {0: 0.9331555555555555, 1: 0.06684444444444444}
+Evaluando SMOTE (CV) para Logistic_L2
+Model: smote:Logistic_L2
+AUC: 0.8488 | AP: 0.3623
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9774    0.7911    0.8744     41992
+           1     0.2034    0.7447    0.3195      3008
+
+    accuracy                         0.7880     45000
+   macro avg     0.5904    0.7679    0.5970     45000
+weighted avg     0.9257    0.7880    0.8373     45000
+
+Model: smote:Logistic_L2
+AUC: 0.8488 | AP: 0.3623
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9774    0.7911    0.8744     41992
+           1     0.2034    0.7447    0.3195      3008
+
+    accuracy                         0.7880     45000
+   macro avg     0.5904    0.7679    0.5970     45000
+weighted avg     0.9257    0.7880    0.8373     45000
+</pre></div>
+</div>
+<img alt="../_images/1027a83bb1da582a0fce3abfe9e6939bd68d60f3f8deb58218bcbcd46184def5.png" src="../_images/1027a83bb1da582a0fce3abfe9e6939bd68d60f3f8deb58218bcbcd46184def5.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando SMOTE (CV) para Logistic_L1
+Model: smote:Logistic_L1
+AUC: 0.8488 | AP: 0.3624
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9775    0.7916    0.8747     41992
+           1     0.2039    0.7453    0.3202      3008
+
+    accuracy                         0.7885     45000
+   macro avg     0.5907    0.7685    0.5975     45000
+weighted avg     0.9258    0.7885    0.8377     45000
+
+Model: smote:Logistic_L1
+AUC: 0.8488 | AP: 0.3624
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9775    0.7916    0.8747     41992
+           1     0.2039    0.7453    0.3202      3008
+
+    accuracy                         0.7885     45000
+   macro avg     0.5907    0.7685    0.5975     45000
+weighted avg     0.9258    0.7885    0.8377     45000
+</pre></div>
+</div>
+<img alt="../_images/c6eddac3822e9153855bf35d29c1e2569c8848229d655258d2d818fe89a1a155.png" src="../_images/c6eddac3822e9153855bf35d29c1e2569c8848229d655258d2d818fe89a1a155.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando SMOTE (CV) para RandomForest
+Model: smote:RandomForest
+AUC: 0.8175 | AP: 0.2611
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9579    0.9277    0.9425     41992
+           1     0.2988    0.4302    0.3527      3008
+
+    accuracy                         0.8944     45000
+   macro avg     0.6284    0.6789    0.6476     45000
+weighted avg     0.9138    0.8944    0.9031     45000
+
+Model: smote:RandomForest
+AUC: 0.8175 | AP: 0.2611
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9579    0.9277    0.9425     41992
+           1     0.2988    0.4302    0.3527      3008
+
+    accuracy                         0.8944     45000
+   macro avg     0.6284    0.6789    0.6476     45000
+weighted avg     0.9138    0.8944    0.9031     45000
+</pre></div>
+</div>
+<img alt="../_images/37fcedd6767cc38befa1698166713884ae9a3b812f33f6dbfc4694a0af135c4e.png" src="../_images/37fcedd6767cc38befa1698166713884ae9a3b812f33f6dbfc4694a0af135c4e.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando SMOTE (CV) para KNN
+Model: smote:KNN
+AUC: 0.7430 | AP: 0.1765
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9641    0.8317    0.8930     41992
+           1     0.1947    0.5682    0.2900      3008
+
+    accuracy                         0.8140     45000
+   macro avg     0.5794    0.6999    0.5915     45000
+weighted avg     0.9127    0.8140    0.8527     45000
+
+Model: smote:KNN
+AUC: 0.7430 | AP: 0.1765
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9641    0.8317    0.8930     41992
+           1     0.1947    0.5682    0.2900      3008
+
+    accuracy                         0.8140     45000
+   macro avg     0.5794    0.6999    0.5915     45000
+weighted avg     0.9127    0.8140    0.8527     45000
+</pre></div>
+</div>
+<img alt="../_images/3e7117a40a81646b4ae7a30df5ba0b9892cacb67e29d2f33af4f939efbb01846.png" src="../_images/3e7117a40a81646b4ae7a30df5ba0b9892cacb67e29d2f33af4f939efbb01846.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando SMOTE (CV) para GaussianNB
+Model: smote:GaussianNB
+AUC: 0.8253 | AP: 0.3398
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9771    0.7801    0.8675     41992
+           1     0.1953    0.7450    0.3094      3008
+
+    accuracy                         0.7777     45000
+   macro avg     0.5862    0.7625    0.5885     45000
+weighted avg     0.9249    0.7777    0.8302     45000
+
+Model: smote:GaussianNB
+AUC: 0.8253 | AP: 0.3398
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9771    0.7801    0.8675     41992
+           1     0.1953    0.7450    0.3094      3008
+
+    accuracy                         0.7777     45000
+   macro avg     0.5862    0.7625    0.5885     45000
+weighted avg     0.9249    0.7777    0.8302     45000
+</pre></div>
+</div>
+<img alt="../_images/eea37fc872d3b8bf3393dfa77bfe62fd35c798d71864d44b41ebe0b83139572f.png" src="../_images/eea37fc872d3b8bf3393dfa77bfe62fd35c798d71864d44b41ebe0b83139572f.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando SMOTE (CV) para DecisionTree
+Model: smote:DecisionTree
+AUC: 0.6195 | AP: 0.1098
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9500    0.8972    0.9229     41992
+           1     0.1920    0.3411    0.2457      3008
+
+    accuracy                         0.8600     45000
+   macro avg     0.5710    0.6191    0.5843     45000
+weighted avg     0.8994    0.8600    0.8776     45000
+
+Model: smote:DecisionTree
+AUC: 0.6195 | AP: 0.1098
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9500    0.8972    0.9229     41992
+           1     0.1920    0.3411    0.2457      3008
+
+    accuracy                         0.8600     45000
+   macro avg     0.5710    0.6191    0.5843     45000
+weighted avg     0.8994    0.8600    0.8776     45000
+</pre></div>
+</div>
+<img alt="../_images/8e93f48a349248bcaf2fdf636a1207e25767b6d157ae5e67fd94f61ffd72e6b8.png" src="../_images/8e93f48a349248bcaf2fdf636a1207e25767b6d157ae5e67fd94f61ffd72e6b8.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando SMOTE (CV) para LinearSVC
+Model: smote:LinearSVC
+AUC: 0.8448 | AP: 0.3558
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     1.0000    0.0002    0.0004     41992
+           1     0.0669    1.0000    0.1253      3008
+
+    accuracy                         0.0670     45000
+   macro avg     0.5334    0.5001    0.0629     45000
+weighted avg     0.9376    0.0670    0.0087     45000
+
+Model: smote:LinearSVC
+AUC: 0.8448 | AP: 0.3558
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     1.0000    0.0002    0.0004     41992
+           1     0.0669    1.0000    0.1253      3008
+
+    accuracy                         0.0670     45000
+   macro avg     0.5334    0.5001    0.0629     45000
+weighted avg     0.9376    0.0670    0.0087     45000
+</pre></div>
+</div>
+<img alt="../_images/49f970c68ada5bd7a7f8a56fd9042049e75aa4c31712ed6ae667f561306bd609.png" src="../_images/49f970c68ada5bd7a7f8a56fd9042049e75aa4c31712ed6ae667f561306bd609.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando SMOTE (CV) para XGBoost
+Model: smote:XGBoost
+AUC: 0.8328 | AP: 0.3049
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9520    0.9649    0.9584     41992
+           1     0.3952    0.3205    0.3540      3008
+
+    accuracy                         0.9218     45000
+   macro avg     0.6736    0.6427    0.6562     45000
+weighted avg     0.9148    0.9218    0.9180     45000
+
+Model: smote:XGBoost
+AUC: 0.8328 | AP: 0.3049
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9520    0.9649    0.9584     41992
+           1     0.3952    0.3205    0.3540      3008
+
+    accuracy                         0.9218     45000
+   macro avg     0.6736    0.6427    0.6562     45000
+weighted avg     0.9148    0.9218    0.9180     45000
+</pre></div>
+</div>
+<img alt="../_images/e6180a3e3a8bf1d8af1bddf14d4c919745c78314d5e01e7a00f4e1caed1020aa.png" src="../_images/e6180a3e3a8bf1d8af1bddf14d4c919745c78314d5e01e7a00f4e1caed1020aa.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved Section 2 (SMOTE) results
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="analisis-de-resultados-de-la-seccion-2-smote">
+<h2>Análisis de Resultados de la Sección 2: SMOTE<a class="headerlink" href="#analisis-de-resultados-de-la-seccion-2-smote" title="Link to this heading">#</a></h2>
+<section id="randomforest-y-xgboost-responden-mejor-al-oversampling">
+<h3>RandomForest y XGBoost Responden Mejor al Oversampling<a class="headerlink" href="#randomforest-y-xgboost-responden-mejor-al-oversampling" title="Link to this heading">#</a></h3>
+<p>A diferencia de la sección anterior, donde los modelos lineales dominaban, aquí vemos un cambio de patrón: los modelos basados en árboles, especialmente <code class="docutils literal notranslate"><span class="pre">RandomForest</span></code> y <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code>, muestran una mejora significativa y emergen como los líderes.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Modelo</p></th>
+<th class="head text-center"><p><strong>F1_Pos</strong></p></th>
+<th class="head text-center"><p>AUC</p></th>
+<th class="head text-center"><p>AP</p></th>
+<th class="head text-center"><p>Precision_Pos</p></th>
+<th class="head text-center"><p>Recall_Pos</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><strong>RandomForest</strong></p></td>
+<td class="text-center"><p><strong>0.3527</strong></p></td>
+<td class="text-center"><p>0.8175</p></td>
+<td class="text-center"><p>0.2611</p></td>
+<td class="text-center"><p>0.2988</p></td>
+<td class="text-center"><p>0.4302</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong>XGBoost</strong></p></td>
+<td class="text-center"><p><strong>0.3540</strong></p></td>
+<td class="text-center"><p>0.8328</p></td>
+<td class="text-center"><p>0.3049</p></td>
+<td class="text-center"><p>0.3952</p></td>
+<td class="text-center"><p>0.3205</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Logistic (L1)</p></td>
+<td class="text-center"><p>0.3202</p></td>
+<td class="text-center"><p>0.8488</p></td>
+<td class="text-center"><p>0.3624</p></td>
+<td class="text-center"><p>0.2039</p></td>
+<td class="text-center"><p>0.7453</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="simple">
+<li><p><strong>Líderes en F1-Score:</strong> <code class="docutils literal notranslate"><span class="pre">RandomForest</span></code> y <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> logran el <strong>mejor F1-Score para la clase positiva (0.35)</strong>. Aunque su <code class="docutils literal notranslate"><span class="pre">recall</span></code> no es tan agresivamente alto como el de los modelos lineales, consiguen un <strong>equilibrio mucho mejor con la <code class="docutils literal notranslate"><span class="pre">precision</span></code></strong>. Por ejemplo, <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> tiene una precisión del 39.5%, casi el doble que la Regresión Logística, lo que significa que sus predicciones de «impago» son mucho más fiables.</p></li>
+<li><p><strong>Modelos Lineales:</strong> <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code> mantiene un <code class="docutils literal notranslate"><span class="pre">recall</span></code> altísimo (~0.74), pero su <code class="docutils literal notranslate"><span class="pre">precision</span></code> sigue siendo muy baja (~0.20). Esto indica que SMOTE, al igual que la ponderación, lo hace muy sensible a la clase minoritaria, pero no necesariamente mejora su capacidad para distinguir los verdaderos positivos de los falsos positivos.</p></li>
+</ul>
+<hr class="docutils" />
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Interesante como LinearSVC se petatea</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="observacion-critica-el-colapso-de-linearsvc">
+<h3>Observación Crítica: El Colapso de LinearSVC<a class="headerlink" href="#observacion-critica-el-colapso-de-linearsvc" title="Link to this heading">#</a></h3>
+<p>El resultado de <code class="docutils literal notranslate"><span class="pre">LinearSVC</span></code> es el hallazgo más dramático y educativo de esta sección:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">recall</span></code>: 1.0000</strong></p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">precision</span></code>: 0.0669</strong></p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">accuracy</span></code>: 0.0670</strong></p></li>
+</ul>
+<p><strong>Análisis:</strong> El modelo ha colapsado por completo. SMOTE ha generado tantos puntos sintéticos que el <code class="docutils literal notranslate"><span class="pre">LinearSVC</span></code> ha aprendido una regla trivial: «clasificar todo como clase 1 (impago)». Esto le da un <code class="docutils literal notranslate"><span class="pre">recall</span></code> perfecto pero una <code class="docutils literal notranslate"><span class="pre">precision</span></code> y <code class="docutils literal notranslate"><span class="pre">accuracy</span></code> bajísimas. Este es un ejemplo clásico de cómo SMOTE puede crear artefactos que confunden a modelos sensibles a la geometría de los datos, como los SVM, reforzando la hipótesis de que no siempre son una buena combinación.</p>
+</section>
+<section id="id2">
+<h3>Veredicto Preliminar<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>SMOTE es Efectivo, pero Depende del Modelo:</strong> La técnica funciona, pero su impacto varía enormemente. Ha demostrado ser especialmente beneficiosa para los modelos de ensamblaje basados en árboles, permitiéndoles encontrar un mejor equilibrio (F1-Score).</p></li>
+<li><p><strong>Nuevo Campeón:</strong> La combinación <strong><code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> + <code class="docutils literal notranslate"><span class="pre">SMOTE</span></code></strong> se perfila como la mejor hasta ahora, con el F1-Score más alto y una <code class="docutils literal notranslate"><span class="pre">precision</span></code> notablemente superior a la de los modelos lineales.</p></li>
+<li><p><strong>Riesgos de SMOTE:</strong> Se ha confirmado experimentalmente que SMOTE puede ser perjudicial para ciertos tipos de modelos, como <code class="docutils literal notranslate"><span class="pre">LinearSVC</span></code>, llevando a un comportamiento de predicción inútil.</p></li>
+</ol>
+<p>El objetivo de la siguiente sección (ADASYN) será ver si su enfoque de oversampling «adaptativo» puede mejorar aún más el rendimiento de los modelos de árboles o si sufre de problemas similares a los de SMOTE.</p>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="seccion-3-balanceo-por-oversampling-con-adasyn">
+<h1>Sección 3: Balanceo por Oversampling con ADASYN<a class="headerlink" href="#seccion-3-balanceo-por-oversampling-con-adasyn" title="Link to this heading">#</a></h1>
+<p>Continuando con las técnicas de oversampling, en esta sección evaluaremos <strong>ADASYN (Adaptive Synthetic Sampling)</strong>. ADASYN es una variante avanzada de SMOTE que se diferencia por generar más datos sintéticos para las muestras de la clase minoritaria que son <strong>más difíciles de aprender</strong>, es decir, aquellas que se encuentran cerca de la frontera de decisión con la clase mayoritaria.</p>
+<p>A continuación, se evaluarán todos los modelos base en combinación con ADASYN. El objetivo principal es determinar si el enfoque «adaptativo» de ADASYN, al concentrarse en la frontera de decisión, puede lograr un mejor equilibrio entre <code class="docutils literal notranslate"><span class="pre">precision</span></code> y <code class="docutils literal notranslate"><span class="pre">recall</span></code> (y, por tanto, un F1-Score superior) en comparación con SMOTE. También se prestará especial atención al comportamiento de <code class="docutils literal notranslate"><span class="pre">LinearSVM</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.over_sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADASYN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">ImbPipeline</span>
+
+<span class="c1"># Reusar Xs, ys de la sección anterior (30%)</span>
+<span class="n">adasyn_results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">est</span> <span class="ow">in</span> <span class="n">base_estimators</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Extraer scaler y clf del pipeline base</span>
+        <span class="n">scaler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">clf</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">est</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">step_obj</span> <span class="ow">in</span> <span class="n">est</span><span class="o">.</span><span class="n">steps</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step_obj</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">):</span>
+                    <span class="n">scaler</span> <span class="o">=</span> <span class="n">step_obj</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">clf</span> <span class="o">=</span> <span class="n">step_obj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">clf</span> <span class="o">=</span> <span class="n">est</span>
+        <span class="n">imb_steps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">scaler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">imb_steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">scaler</span><span class="p">))</span>
+        <span class="n">imb_steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;adasyn&#39;</span><span class="p">,</span> <span class="n">ADASYN</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)))</span>
+        <span class="n">imb_steps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">clf</span><span class="p">))</span>
+        <span class="n">pipe</span> <span class="o">=</span> <span class="n">ImbPipeline</span><span class="p">(</span><span class="n">imb_steps</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Evaluando ADASYN (CV) para&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">get_cv_scores</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
+        <span class="n">adasyn_results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="n">pretty_print_metrics</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">technique</span><span class="o">=</span><span class="s1">&#39;adasyn&#39;</span><span class="p">)</span>
+        <span class="n">show_and_save_confusion</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;cm&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;adasyn_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Error ADASYN&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="s1">&#39;sec3_adasyn_cv.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">adasyn_results</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="s1">&#39;tolist&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saved Section 3 (ADASYN) results&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando ADASYN (CV) para Logistic_L2
+Model: adasyn:Logistic_L2
+AUC: 0.8474 | AP: 0.3601
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9795    0.7601    0.8560     41992
+           1     0.1884    0.7776    0.3034      3008
+
+    accuracy                         0.7613     45000
+   macro avg     0.5840    0.7688    0.5797     45000
+weighted avg     0.9266    0.7613    0.8190     45000
+
+Model: adasyn:Logistic_L2
+AUC: 0.8474 | AP: 0.3601
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9795    0.7601    0.8560     41992
+           1     0.1884    0.7776    0.3034      3008
+
+    accuracy                         0.7613     45000
+   macro avg     0.5840    0.7688    0.5797     45000
+weighted avg     0.9266    0.7613    0.8190     45000
+</pre></div>
+</div>
+<img alt="../_images/529397006d366d77e9815b6cddb049bd1ee31ccf953f837f38b0b75b4d1988c2.png" src="../_images/529397006d366d77e9815b6cddb049bd1ee31ccf953f837f38b0b75b4d1988c2.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando ADASYN (CV) para Logistic_L1
+Model: adasyn:Logistic_L1
+AUC: 0.8474 | AP: 0.3601
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9795    0.7609    0.8565     41992
+           1     0.1889    0.7773    0.3039      3008
+
+    accuracy                         0.7620     45000
+   macro avg     0.5842    0.7691    0.5802     45000
+weighted avg     0.9266    0.7620    0.8195     45000
+
+Model: adasyn:Logistic_L1
+AUC: 0.8474 | AP: 0.3601
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9795    0.7609    0.8565     41992
+           1     0.1889    0.7773    0.3039      3008
+
+    accuracy                         0.7620     45000
+   macro avg     0.5842    0.7691    0.5802     45000
+weighted avg     0.9266    0.7620    0.8195     45000
+</pre></div>
+</div>
+<img alt="../_images/63e390ecfc6bd03bfab8d95d66d1ab8ba7d2ef18be4ef51c200b69b6c1d5d591.png" src="../_images/63e390ecfc6bd03bfab8d95d66d1ab8ba7d2ef18be4ef51c200b69b6c1d5d591.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando ADASYN (CV) para RandomForest
+Model: adasyn:RandomForest
+AUC: 0.8135 | AP: 0.2476
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9565    0.9242    0.9401     41992
+           1     0.2809    0.4132    0.3345      3008
+
+    accuracy                         0.8901     45000
+   macro avg     0.6187    0.6687    0.6373     45000
+weighted avg     0.9113    0.8901    0.8996     45000
+
+Model: adasyn:RandomForest
+AUC: 0.8135 | AP: 0.2476
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9565    0.9242    0.9401     41992
+           1     0.2809    0.4132    0.3345      3008
+
+    accuracy                         0.8901     45000
+   macro avg     0.6187    0.6687    0.6373     45000
+weighted avg     0.9113    0.8901    0.8996     45000
+</pre></div>
+</div>
+<img alt="../_images/72a7c3a63b6c404605f001ae69b60c78731cbc306cc7f1312ef5704aeb9a06a4.png" src="../_images/72a7c3a63b6c404605f001ae69b60c78731cbc306cc7f1312ef5704aeb9a06a4.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando ADASYN (CV) para KNN
+Model: adasyn:KNN
+AUC: 0.7408 | AP: 0.1695
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9642    0.8216    0.8872     41992
+           1     0.1875    0.5745    0.2827      3008
+
+    accuracy                         0.8051     45000
+   macro avg     0.5758    0.6981    0.5850     45000
+weighted avg     0.9123    0.8051    0.8468     45000
+
+Model: adasyn:KNN
+AUC: 0.7408 | AP: 0.1695
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9642    0.8216    0.8872     41992
+           1     0.1875    0.5745    0.2827      3008
+
+    accuracy                         0.8051     45000
+   macro avg     0.5758    0.6981    0.5850     45000
+weighted avg     0.9123    0.8051    0.8468     45000
+</pre></div>
+</div>
+<img alt="../_images/edf7c3f63852a15a6c0abd5f1668aaf652793e778f1eee5ef15017bc60cc4ead.png" src="../_images/edf7c3f63852a15a6c0abd5f1668aaf652793e778f1eee5ef15017bc60cc4ead.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando ADASYN (CV) para GaussianNB
+Model: adasyn:GaussianNB
+AUC: 0.8280 | AP: 0.3422
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9791    0.7536    0.8517     41992
+           1     0.1841    0.7759    0.2976      3008
+
+    accuracy                         0.7551     45000
+   macro avg     0.5816    0.7648    0.5746     45000
+weighted avg     0.9260    0.7551    0.8147     45000
+
+Model: adasyn:GaussianNB
+AUC: 0.8280 | AP: 0.3422
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9791    0.7536    0.8517     41992
+           1     0.1841    0.7759    0.2976      3008
+
+    accuracy                         0.7551     45000
+   macro avg     0.5816    0.7648    0.5746     45000
+weighted avg     0.9260    0.7551    0.8147     45000
+</pre></div>
+</div>
+<img alt="../_images/e19e1d9285a504bbdc52b5fd625403229ce9375d8dadee9d0d93d3a0d3345814.png" src="../_images/e19e1d9285a504bbdc52b5fd625403229ce9375d8dadee9d0d93d3a0d3345814.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando ADASYN (CV) para DecisionTree
+Model: adasyn:DecisionTree
+AUC: 0.6116 | AP: 0.1060
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9489    0.8995    0.9235     41992
+           1     0.1873    0.3235    0.2372      3008
+
+    accuracy                         0.8610     45000
+   macro avg     0.5681    0.6115    0.5804     45000
+weighted avg     0.8980    0.8610    0.8776     45000
+
+Model: adasyn:DecisionTree
+AUC: 0.6116 | AP: 0.1060
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9489    0.8995    0.9235     41992
+           1     0.1873    0.3235    0.2372      3008
+
+    accuracy                         0.8610     45000
+   macro avg     0.5681    0.6115    0.5804     45000
+weighted avg     0.8980    0.8610    0.8776     45000
+</pre></div>
+</div>
+<img alt="../_images/105a1fe2f33ddb0589bf224f1f0e69f46c2f84e886e57e5102482a0a6f2b2365.png" src="../_images/105a1fe2f33ddb0589bf224f1f0e69f46c2f84e886e57e5102482a0a6f2b2365.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando ADASYN (CV) para LinearSVC
+Model: adasyn:LinearSVC
+AUC: 0.8428 | AP: 0.3527
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     1.0000    0.0001    0.0003     41992
+           1     0.0669    1.0000    0.1253      3008
+
+    accuracy                         0.0670     45000
+   macro avg     0.5334    0.5001    0.0628     45000
+weighted avg     0.9376    0.0670    0.0086     45000
+
+Model: adasyn:LinearSVC
+AUC: 0.8428 | AP: 0.3527
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     1.0000    0.0001    0.0003     41992
+           1     0.0669    1.0000    0.1253      3008
+
+    accuracy                         0.0670     45000
+   macro avg     0.5334    0.5001    0.0628     45000
+weighted avg     0.9376    0.0670    0.0086     45000
+</pre></div>
+</div>
+<img alt="../_images/8280e30abf663441833f126f4f9ee8a172b9635993f5f41f2678968d711c96d0.png" src="../_images/8280e30abf663441833f126f4f9ee8a172b9635993f5f41f2678968d711c96d0.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Evaluando ADASYN (CV) para XGBoost
+Model: adasyn:XGBoost
+AUC: 0.8305 | AP: 0.2926
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9516    0.9642    0.9578     41992
+           1     0.3862    0.3148    0.3469      3008
+
+    accuracy                         0.9208     45000
+   macro avg     0.6689    0.6395    0.6524     45000
+weighted avg     0.9138    0.9208    0.9170     45000
+
+Model: adasyn:XGBoost
+AUC: 0.8305 | AP: 0.2926
+Classification Report:
+              precision    recall  f1-score   support
+
+           0     0.9516    0.9642    0.9578     41992
+           1     0.3862    0.3148    0.3469      3008
+
+    accuracy                         0.9208     45000
+   macro avg     0.6689    0.6395    0.6524     45000
+weighted avg     0.9138    0.9208    0.9170     45000
+</pre></div>
+</div>
+<img alt="../_images/8c2a9800cd76cfbdffc10bd79984807d7f20933425f2f97accd77d25fdf9b8bc.png" src="../_images/8c2a9800cd76cfbdffc10bd79984807d7f20933425f2f97accd77d25fdf9b8bc.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved Section 3 (ADASYN) results
+</pre></div>
+</div>
+</div>
+</div>
+<section id="analisis-de-resultados-de-la-seccion-3-adasyn">
+<h2>Análisis de Resultados de la Sección 3: ADASYN<a class="headerlink" href="#analisis-de-resultados-de-la-seccion-3-adasyn" title="Link to this heading">#</a></h2>
+<p>En esta última fase de experimentación, se evaluó <strong>ADASYN</strong>.</p>
+<section id="conclusion-principal-adasyn-no-supera-a-smote-en-este-dataset">
+<h3>Conclusión Principal: ADASYN no Supera a SMOTE en este Dataset<a class="headerlink" href="#conclusion-principal-adasyn-no-supera-a-smote-en-este-dataset" title="Link to this heading">#</a></h3>
+<p>Al comparar los resultados de ADASYN con los de SMOTE, se observa una tendencia clara: <strong>para la mayoría de los modelos, ADASYN ofrece un rendimiento ligeramente inferior o, en el mejor de los casos, similar al de SMOTE.</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Modelo</p></th>
+<th class="head text-center"><p>F1_Pos (con <strong>SMOTE</strong>)</p></th>
+<th class="head text-center"><p>F1_Pos (con <strong>ADASYN</strong>)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><strong>XGBoost</strong></p></td>
+<td class="text-center"><p><strong>0.3540</strong></p></td>
+<td class="text-center"><p>0.3469</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><strong>RandomForest</strong></p></td>
+<td class="text-center"><p><strong>0.3527</strong></p></td>
+<td class="text-center"><p>0.3345</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Logistic (L1)</p></td>
+<td class="text-center"><p>0.3202</p></td>
+<td class="text-center"><p>0.3039</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="simple">
+<li><p><strong>Rendimiento en F1-Score:</strong> Los modelos (<code class="docutils literal notranslate"><span class="pre">XGBoost</span></code>, <code class="docutils literal notranslate"><span class="pre">RandomForest</span></code>), que fueron los campeones con SMOTE, ven su F1-Score <strong>disminuir</strong> ligeramente con ADASYN. Esto sugiere que el enfoque de ADASYN de concentrarse en los puntos «difíciles» de la frontera no mejora los resultados del SMOTE, eso so <strong>Tardó menos en las mismas condiciones</strong>.</p></li>
+<li><p><strong>Modelos Lineales:</strong> La Regresión Logística también muestra un F1-Score más bajo con ADASYN (~0.30) en comparación con SMOTE (~0.32).</p></li>
+</ul>
+</section>
+<section id="validacion-de-la-hipotesis-sobre-linearsvc">
+<h3>Validación de la Hipótesis sobre LinearSVC<a class="headerlink" href="#validacion-de-la-hipotesis-sobre-linearsvc" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">LinearSVC</span></code> + <code class="docutils literal notranslate"><span class="pre">ADASYN</span></code>:</strong> Al igual que con SMOTE, el modelo colapsa por completo, aprendiendo la regla trivial de clasificar todo como la clase positiva (<code class="docutils literal notranslate"><span class="pre">recall</span></code>: 1.0, <code class="docutils literal notranslate"><span class="pre">precision</span></code>: 0.0669).</p></li>
+</ul>
+<p>Con los resultados de las tres secciones, ya estamos listos para construir la tabla comparativa final y declarar la estrategia ganadora que pasará a la fase de optimización de hiperparámetros.</p>
+</section>
+<hr class="docutils" />
+<section id="id3">
+<h3>Veredicto Preliminar<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>SMOTE es la Técnica de Oversampling Superior:</strong> Para este problema específico, la estrategia de oversampling más general de SMOTE ha demostrado ser más efectiva que el enfoque adaptativo de ADASYN.</p></li>
+<li><p><strong>La Combinación Ganadora se Mantiene:</strong> La combinación de <strong><code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> con <code class="docutils literal notranslate"><span class="pre">SMOTE</span></code> sigue siendo la estrategia más prometedora</strong>, habiendo logrado el F1-Score más alto de todos los experimentos realizados hasta ahora.</p></li>
+</ol>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="seccion-4-analisis-comparativo-final-y-conclusiones">
+<h1>Sección 4: Análisis Comparativo Final y Conclusiones<a class="headerlink" href="#seccion-4-analisis-comparativo-final-y-conclusiones" title="Link to this heading">#</a></h1>
+<p>Después de haber evaluado sistemáticamente las tres familias de técnicas de balanceo (Ponderación de Clases, SMOTE y ADASYN) en un amplio espectro de modelos, esta sección final consolida todos los resultados para realizar un análisis comparativo y extraer conclusiones definitivas.</p>
+<section id="metodologia-de-analisis">
+<h2>Metodología de Análisis<a class="headerlink" href="#metodologia-de-analisis" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Carga de Resultados:</strong> Se cargan los archivos <code class="docutils literal notranslate"><span class="pre">JSON</span></code> generados en las secciones anteriores, que contienen las métricas detalladas para cada experimento.</p></li>
+<li><p><strong>Consolidación en una Tabla Única:</strong> Se construye un único DataFrame de pandas (<code class="docutils literal notranslate"><span class="pre">comp_final</span></code>) que unifica todos los resultados, incluyendo métricas clave como <code class="docutils literal notranslate"><span class="pre">AUC</span></code>, <code class="docutils literal notranslate"><span class="pre">AP</span></code>, <code class="docutils literal notranslate"><span class="pre">Accuracy</span></code>, y, de manera crucial, la <code class="docutils literal notranslate"><span class="pre">Precision</span></code>, <code class="docutils literal notranslate"><span class="pre">Recall</span></code> y <code class="docutils literal notranslate"><span class="pre">F1-Score</span></code> desglosadas por clase.</p></li>
+<li><p><strong>Análisis por Métricas Clave:</strong></p>
+<ul class="simple">
+<li><p>Se presenta un <strong>Top 10 de modelos ordenados por <code class="docutils literal notranslate"><span class="pre">Recall</span></code></strong> de la clase positiva. Esto nos permite ver qué combinaciones son las mejores para maximizar la detección de clientes en riesgo de impago. (Exceptuando LinearSCV)</p></li>
+<li><p>Se muestra la tabla completa ordenada por <strong><code class="docutils literal notranslate"><span class="pre">F1-Score</span></code></strong> de la clase positiva, que representa el equilibrio entre <code class="docutils literal notranslate"><span class="pre">Precision</span></code> y <code class="docutils literal notranslate"><span class="pre">Recall</span></code> y será nuestra métrica principal para declarar al ganador.</p></li>
+</ul>
+</li>
+</ol>
+<p>El objetivo de este análisis final es identificar de manera inequívoca la combinación de modelo y técnica de balanceo que ofrece el mejor rendimiento y que, por lo tanto, será recomendada para pasar a las siguientes fases de optimización y tuning de hiperparámetros.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cargar resultados de las tres secciones</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="s1">&#39;sec1_weighting_and_baselines.json&#39;</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="s1">&#39;sec2_smote_cv.json&#39;</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="s1">&#39;sec3_adasyn_cv.json&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">sec1</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">sec2</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p3</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">sec3</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">row_from_stats</span><span class="p">(</span><span class="n">technique</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">stats</span><span class="p">):</span>
+    <span class="n">rd</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;report_dict&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">neg</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">macro</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;macro avg&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">weighted</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;weighted avg&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;technique&#39;</span><span class="p">:</span> <span class="n">technique</span><span class="p">,</span>
+        <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">model</span><span class="p">,</span>
+        <span class="s1">&#39;auc&#39;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;auc&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;ap&#39;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ap&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">rd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)),</span>
+        <span class="c1"># Negativa (clase 0)</span>
+        <span class="s1">&#39;neg_precision&#39;</span><span class="p">:</span> <span class="n">neg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;precision&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;neg_recall&#39;</span><span class="p">:</span> <span class="n">neg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;recall&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;neg_f1&#39;</span><span class="p">:</span> <span class="n">neg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;f1-score&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;neg_support&#39;</span><span class="p">:</span> <span class="n">neg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;support&#39;</span><span class="p">),</span>
+        <span class="c1"># Positiva (clase 1)</span>
+        <span class="s1">&#39;pos_precision&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;precision&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;pos_recall&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;recall&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;pos_f1&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;f1-score&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;pos_support&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;support&#39;</span><span class="p">),</span>
+        <span class="c1"># Promedios</span>
+        <span class="s1">&#39;macro_precision&#39;</span><span class="p">:</span> <span class="n">macro</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;precision&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;macro_recall&#39;</span><span class="p">:</span> <span class="n">macro</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;recall&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;macro_f1&#39;</span><span class="p">:</span> <span class="n">macro</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;f1-score&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;weighted_precision&#39;</span><span class="p">:</span> <span class="n">weighted</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;precision&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;weighted_recall&#39;</span><span class="p">:</span> <span class="n">weighted</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;recall&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;weighted_f1&#39;</span><span class="p">:</span> <span class="n">weighted</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;f1-score&#39;</span><span class="p">),</span>
+    <span class="p">}</span>
+
+<span class="c1"># Construir tabla comparativa</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sec1</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">tech</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;::&#39;</span><span class="p">)</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row_from_stats</span><span class="p">(</span><span class="n">tech</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sec2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row_from_stats</span><span class="p">(</span><span class="s1">&#39;smote&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sec3</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row_from_stats</span><span class="p">(</span><span class="s1">&#39;adasyn&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+<span class="n">comp_final</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+
+<span class="c1"># Función para mostrar Top-N por RECALL (clase positiva)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_top_n_by_recall</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude_models</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">exclude_models</span><span class="p">:</span>
+        <span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="p">[</span><span class="o">~</span><span class="n">df_filtered</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">exclude_models</span><span class="p">)]</span>
+    
+    <span class="n">top</span> <span class="o">=</span> <span class="n">df_filtered</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;pos_recall&#39;</span><span class="p">)[[</span><span class="s1">&#39;technique&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_recall&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_precision&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_f1&#39;</span><span class="p">,</span> <span class="s1">&#39;auc&#39;</span><span class="p">,</span> <span class="s1">&#39;ap&#39;</span><span class="p">]]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">80</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TOP-</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> MODELOS POR RECALL (Clase Positiva)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">exclude_models</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(Excluyendo: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exclude_models</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">80</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">top</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">80</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">top</span>
+
+<span class="c1"># Mostrar top 10 por recall (excluyendo LinearSVC por razones técnicas explicadas más adelante)</span>
+<span class="n">top_recall</span> <span class="o">=</span> <span class="n">show_top_n_by_recall</span><span class="p">(</span><span class="n">comp_final</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude_models</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LinearSVC&#39;</span><span class="p">])</span>
+
+<span class="c1"># Mostrar tabla completa ordenada por F1 de clase positiva</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Tabla completa ordenada por F1 (clase positiva):&quot;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">comp_final</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;pos_f1&#39;</span><span class="p">,</span><span class="s1">&#39;accuracy&#39;</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]))</span>
+
+<span class="c1"># Gráfico comparativo: F1 de la clase positiva</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">comp_final</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;pos_f1&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;technique&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;RdPu&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Comparativa (F1 clase positiva) por técnica de balanceo&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plot_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="s1">&#39;balance_final_posF1_comparison.png&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plot_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Guardar resultados</span>
+<span class="n">comp_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTS_DIR</span><span class="p">,</span> <span class="s1">&#39;balance_final_comparison.csv&#39;</span><span class="p">)</span>
+<span class="n">comp_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">comp_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saved final comparison to&#39;</span><span class="p">,</span> <span class="n">comp_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saved plot to&#39;</span><span class="p">,</span> <span class="n">plot_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>================================================================================
+TOP-10 MODELOS POR RECALL (Clase Positiva)
+(Excluyendo: LinearSVC)
+================================================================================
+technique                model  pos_recall  pos_precision   pos_f1      auc       ap
+   adasyn          Logistic_L2    0.777593       0.188431 0.303353 0.847353 0.360076
+   adasyn          Logistic_L1    0.777261       0.188884 0.303913 0.847380 0.360086
+   adasyn           GaussianNB    0.775931       0.184084 0.297571 0.827974 0.342216
+ weighted Logistic_L2_weighted    0.748255       0.211604 0.329911 0.854355 0.377921
+ weighted Logistic_L1_weighted    0.747955       0.211794 0.330112 0.854354 0.377870
+    smote          Logistic_L1    0.745346       0.203911 0.320217 0.848840 0.362355
+    smote           GaussianNB    0.745013       0.195260 0.309424 0.825296 0.339780
+    smote          Logistic_L2    0.744681       0.203396 0.319521 0.848788 0.362338
+ weighted     XGBoost_weighted    0.719729       0.231676 0.350521 0.855746 0.375752
+   adasyn                  KNN    0.574468       0.187459 0.282676 0.740792 0.169475
+================================================================================
+
+
+Tabla completa ordenada por F1 (clase positiva):
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>technique</th>
+      <th>model</th>
+      <th>auc</th>
+      <th>ap</th>
+      <th>accuracy</th>
+      <th>neg_precision</th>
+      <th>neg_recall</th>
+      <th>neg_f1</th>
+      <th>neg_support</th>
+      <th>pos_precision</th>
+      <th>pos_recall</th>
+      <th>pos_f1</th>
+      <th>pos_support</th>
+      <th>macro_precision</th>
+      <th>macro_recall</th>
+      <th>macro_f1</th>
+      <th>weighted_precision</th>
+      <th>weighted_recall</th>
+      <th>weighted_f1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>4</th>
+      <td>baseline</td>
+      <td>GaussianNB</td>
+      <td>0.836488</td>
+      <td>0.353253</td>
+      <td>0.891680</td>
+      <td>0.966595</td>
+      <td>0.915563</td>
+      <td>0.940387</td>
+      <td>139974.0</td>
+      <td>0.321371</td>
+      <td>0.558249</td>
+      <td>0.407915</td>
+      <td>10026.0</td>
+      <td>0.643983</td>
+      <td>0.736906</td>
+      <td>0.674151</td>
+      <td>0.923468</td>
+      <td>0.891680</td>
+      <td>0.904797</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>smote</td>
+      <td>XGBoost</td>
+      <td>0.832813</td>
+      <td>0.304869</td>
+      <td>0.921800</td>
+      <td>0.951975</td>
+      <td>0.964874</td>
+      <td>0.958381</td>
+      <td>41992.0</td>
+      <td>0.395244</td>
+      <td>0.320479</td>
+      <td>0.353956</td>
+      <td>3008.0</td>
+      <td>0.673609</td>
+      <td>0.642676</td>
+      <td>0.656169</td>
+      <td>0.914760</td>
+      <td>0.921800</td>
+      <td>0.917979</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>smote</td>
+      <td>RandomForest</td>
+      <td>0.817525</td>
+      <td>0.261095</td>
+      <td>0.894444</td>
+      <td>0.957856</td>
+      <td>0.927701</td>
+      <td>0.942537</td>
+      <td>41992.0</td>
+      <td>0.298845</td>
+      <td>0.430186</td>
+      <td>0.352685</td>
+      <td>3008.0</td>
+      <td>0.628351</td>
+      <td>0.678943</td>
+      <td>0.647611</td>
+      <td>0.913805</td>
+      <td>0.894444</td>
+      <td>0.903109</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>weighted</td>
+      <td>XGBoost_weighted</td>
+      <td>0.855746</td>
+      <td>0.375752</td>
+      <td>0.821727</td>
+      <td>0.976357</td>
+      <td>0.829033</td>
+      <td>0.896684</td>
+      <td>139974.0</td>
+      <td>0.231676</td>
+      <td>0.719729</td>
+      <td>0.350521</td>
+      <td>10026.0</td>
+      <td>0.604016</td>
+      <td>0.774381</td>
+      <td>0.623602</td>
+      <td>0.926583</td>
+      <td>0.821727</td>
+      <td>0.860178</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>adasyn</td>
+      <td>XGBoost</td>
+      <td>0.830512</td>
+      <td>0.292591</td>
+      <td>0.920756</td>
+      <td>0.951561</td>
+      <td>0.964160</td>
+      <td>0.957819</td>
+      <td>41992.0</td>
+      <td>0.386215</td>
+      <td>0.314827</td>
+      <td>0.346886</td>
+      <td>3008.0</td>
+      <td>0.668888</td>
+      <td>0.639493</td>
+      <td>0.652353</td>
+      <td>0.913770</td>
+      <td>0.920756</td>
+      <td>0.916981</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>adasyn</td>
+      <td>RandomForest</td>
+      <td>0.813538</td>
+      <td>0.247647</td>
+      <td>0.890067</td>
+      <td>0.956500</td>
+      <td>0.924224</td>
+      <td>0.940085</td>
+      <td>41992.0</td>
+      <td>0.280904</td>
+      <td>0.413231</td>
+      <td>0.334454</td>
+      <td>3008.0</td>
+      <td>0.618702</td>
+      <td>0.668728</td>
+      <td>0.637270</td>
+      <td>0.911340</td>
+      <td>0.890067</td>
+      <td>0.899602</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>weighted</td>
+      <td>Logistic_L1_weighted</td>
+      <td>0.854354</td>
+      <td>0.377870</td>
+      <td>0.797100</td>
+      <td>0.977948</td>
+      <td>0.800620</td>
+      <td>0.880444</td>
+      <td>139974.0</td>
+      <td>0.211794</td>
+      <td>0.747955</td>
+      <td>0.330112</td>
+      <td>10026.0</td>
+      <td>0.594871</td>
+      <td>0.774288</td>
+      <td>0.605278</td>
+      <td>0.926738</td>
+      <td>0.797100</td>
+      <td>0.843660</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>weighted</td>
+      <td>Logistic_L2_weighted</td>
+      <td>0.854355</td>
+      <td>0.377921</td>
+      <td>0.796833</td>
+      <td>0.977965</td>
+      <td>0.800313</td>
+      <td>0.880265</td>
+      <td>139974.0</td>
+      <td>0.211604</td>
+      <td>0.748255</td>
+      <td>0.329911</td>
+      <td>10026.0</td>
+      <td>0.594785</td>
+      <td>0.774284</td>
+      <td>0.605088</td>
+      <td>0.926742</td>
+      <td>0.796833</td>
+      <td>0.843480</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>smote</td>
+      <td>Logistic_L1</td>
+      <td>0.848840</td>
+      <td>0.362355</td>
+      <td>0.788467</td>
+      <td>0.977474</td>
+      <td>0.791556</td>
+      <td>0.874745</td>
+      <td>41992.0</td>
+      <td>0.203911</td>
+      <td>0.745346</td>
+      <td>0.320217</td>
+      <td>3008.0</td>
+      <td>0.590692</td>
+      <td>0.768451</td>
+      <td>0.597481</td>
+      <td>0.925766</td>
+      <td>0.788467</td>
+      <td>0.837678</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>smote</td>
+      <td>Logistic_L2</td>
+      <td>0.848788</td>
+      <td>0.362338</td>
+      <td>0.787978</td>
+      <td>0.977403</td>
+      <td>0.791079</td>
+      <td>0.874426</td>
+      <td>41992.0</td>
+      <td>0.203396</td>
+      <td>0.744681</td>
+      <td>0.319521</td>
+      <td>3008.0</td>
+      <td>0.590400</td>
+      <td>0.767880</td>
+      <td>0.596973</td>
+      <td>0.925665</td>
+      <td>0.787978</td>
+      <td>0.837334</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>smote</td>
+      <td>GaussianNB</td>
+      <td>0.825296</td>
+      <td>0.339780</td>
+      <td>0.777711</td>
+      <td>0.977120</td>
+      <td>0.780053</td>
+      <td>0.867536</td>
+      <td>41992.0</td>
+      <td>0.195260</td>
+      <td>0.745013</td>
+      <td>0.309424</td>
+      <td>3008.0</td>
+      <td>0.586190</td>
+      <td>0.762533</td>
+      <td>0.588480</td>
+      <td>0.924857</td>
+      <td>0.777711</td>
+      <td>0.830230</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>adasyn</td>
+      <td>Logistic_L1</td>
+      <td>0.847380</td>
+      <td>0.360086</td>
+      <td>0.762000</td>
+      <td>0.979462</td>
+      <td>0.760907</td>
+      <td>0.856461</td>
+      <td>41992.0</td>
+      <td>0.188884</td>
+      <td>0.777261</td>
+      <td>0.303913</td>
+      <td>3008.0</td>
+      <td>0.584173</td>
+      <td>0.769084</td>
+      <td>0.580187</td>
+      <td>0.926616</td>
+      <td>0.762000</td>
+      <td>0.819526</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>adasyn</td>
+      <td>Logistic_L2</td>
+      <td>0.847353</td>
+      <td>0.360076</td>
+      <td>0.761267</td>
+      <td>0.979470</td>
+      <td>0.760097</td>
+      <td>0.855951</td>
+      <td>41992.0</td>
+      <td>0.188431</td>
+      <td>0.777593</td>
+      <td>0.303353</td>
+      <td>3008.0</td>
+      <td>0.583951</td>
+      <td>0.768845</td>
+      <td>0.579652</td>
+      <td>0.926594</td>
+      <td>0.761267</td>
+      <td>0.819013</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>adasyn</td>
+      <td>GaussianNB</td>
+      <td>0.827974</td>
+      <td>0.342216</td>
+      <td>0.755133</td>
+      <td>0.979147</td>
+      <td>0.753644</td>
+      <td>0.851722</td>
+      <td>41992.0</td>
+      <td>0.184084</td>
+      <td>0.775931</td>
+      <td>0.297571</td>
+      <td>3008.0</td>
+      <td>0.581615</td>
+      <td>0.764787</td>
+      <td>0.574647</td>
+      <td>0.926001</td>
+      <td>0.755133</td>
+      <td>0.814680</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>smote</td>
+      <td>KNN</td>
+      <td>0.742993</td>
+      <td>0.176466</td>
+      <td>0.814044</td>
+      <td>0.964138</td>
+      <td>0.831658</td>
+      <td>0.893011</td>
+      <td>41992.0</td>
+      <td>0.194691</td>
+      <td>0.568152</td>
+      <td>0.290005</td>
+      <td>3008.0</td>
+      <td>0.579415</td>
+      <td>0.699905</td>
+      <td>0.591508</td>
+      <td>0.912705</td>
+      <td>0.814044</td>
+      <td>0.852704</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>adasyn</td>
+      <td>KNN</td>
+      <td>0.740792</td>
+      <td>0.169475</td>
+      <td>0.805111</td>
+      <td>0.964228</td>
+      <td>0.821633</td>
+      <td>0.887237</td>
+      <td>41992.0</td>
+      <td>0.187459</td>
+      <td>0.574468</td>
+      <td>0.282676</td>
+      <td>3008.0</td>
+      <td>0.575844</td>
+      <td>0.698050</td>
+      <td>0.584957</td>
+      <td>0.912305</td>
+      <td>0.805111</td>
+      <td>0.846826</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>baseline</td>
+      <td>XGBoost</td>
+      <td>0.860998</td>
+      <td>0.380347</td>
+      <td>0.935720</td>
+      <td>0.944273</td>
+      <td>0.989512</td>
+      <td>0.966364</td>
+      <td>139974.0</td>
+      <td>0.557831</td>
+      <td>0.184720</td>
+      <td>0.277536</td>
+      <td>10026.0</td>
+      <td>0.751052</td>
+      <td>0.587116</td>
+      <td>0.621950</td>
+      <td>0.918443</td>
+      <td>0.935720</td>
+      <td>0.920322</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>baseline</td>
+      <td>KNN</td>
+      <td>0.741775</td>
+      <td>0.231119</td>
+      <td>0.930313</td>
+      <td>0.944854</td>
+      <td>0.982675</td>
+      <td>0.963394</td>
+      <td>139974.0</td>
+      <td>0.451730</td>
+      <td>0.199282</td>
+      <td>0.276559</td>
+      <td>10026.0</td>
+      <td>0.698292</td>
+      <td>0.590979</td>
+      <td>0.619976</td>
+      <td>0.911893</td>
+      <td>0.930313</td>
+      <td>0.917486</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>baseline</td>
+      <td>RandomForest</td>
+      <td>0.839858</td>
+      <td>0.345069</td>
+      <td>0.934180</td>
+      <td>0.943779</td>
+      <td>0.988341</td>
+      <td>0.965546</td>
+      <td>139974.0</td>
+      <td>0.522388</td>
+      <td>0.178037</td>
+      <td>0.265566</td>
+      <td>10026.0</td>
+      <td>0.733084</td>
+      <td>0.583189</td>
+      <td>0.615556</td>
+      <td>0.915614</td>
+      <td>0.934180</td>
+      <td>0.918759</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>baseline</td>
+      <td>DecisionTree</td>
+      <td>0.608894</td>
+      <td>0.118439</td>
+      <td>0.897480</td>
+      <td>0.947723</td>
+      <td>0.942104</td>
+      <td>0.944905</td>
+      <td>139974.0</td>
+      <td>0.253500</td>
+      <td>0.274486</td>
+      <td>0.263576</td>
+      <td>10026.0</td>
+      <td>0.600612</td>
+      <td>0.608295</td>
+      <td>0.604241</td>
+      <td>0.901321</td>
+      <td>0.897480</td>
+      <td>0.899365</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>baseline</td>
+      <td>Logistic_L1</td>
+      <td>0.849043</td>
+      <td>0.372664</td>
+      <td>0.936807</td>
+      <td>0.943038</td>
+      <td>0.992213</td>
+      <td>0.967001</td>
+      <td>139974.0</td>
+      <td>0.600293</td>
+      <td>0.163275</td>
+      <td>0.256724</td>
+      <td>10026.0</td>
+      <td>0.771666</td>
+      <td>0.577744</td>
+      <td>0.611862</td>
+      <td>0.920129</td>
+      <td>0.936807</td>
+      <td>0.919526</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>baseline</td>
+      <td>Logistic_L2</td>
+      <td>0.848977</td>
+      <td>0.372712</td>
+      <td>0.936780</td>
+      <td>0.942994</td>
+      <td>0.992234</td>
+      <td>0.966988</td>
+      <td>139974.0</td>
+      <td>0.599926</td>
+      <td>0.162577</td>
+      <td>0.255827</td>
+      <td>10026.0</td>
+      <td>0.771460</td>
+      <td>0.577406</td>
+      <td>0.611407</td>
+      <td>0.920063</td>
+      <td>0.936780</td>
+      <td>0.919454</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>smote</td>
+      <td>DecisionTree</td>
+      <td>0.619481</td>
+      <td>0.109821</td>
+      <td>0.860022</td>
+      <td>0.950021</td>
+      <td>0.897195</td>
+      <td>0.922853</td>
+      <td>41992.0</td>
+      <td>0.192027</td>
+      <td>0.341090</td>
+      <td>0.245719</td>
+      <td>3008.0</td>
+      <td>0.571024</td>
+      <td>0.619143</td>
+      <td>0.584286</td>
+      <td>0.899354</td>
+      <td>0.860022</td>
+      <td>0.877590</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>adasyn</td>
+      <td>DecisionTree</td>
+      <td>0.611618</td>
+      <td>0.105960</td>
+      <td>0.860956</td>
+      <td>0.948876</td>
+      <td>0.899457</td>
+      <td>0.923506</td>
+      <td>41992.0</td>
+      <td>0.187295</td>
+      <td>0.323471</td>
+      <td>0.237230</td>
+      <td>3008.0</td>
+      <td>0.568086</td>
+      <td>0.611464</td>
+      <td>0.580368</td>
+      <td>0.897968</td>
+      <td>0.860956</td>
+      <td>0.877632</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>weighted</td>
+      <td>RandomForest_weighted</td>
+      <td>0.835577</td>
+      <td>0.325978</td>
+      <td>0.933827</td>
+      <td>0.941913</td>
+      <td>0.990148</td>
+      <td>0.965429</td>
+      <td>139974.0</td>
+      <td>0.517495</td>
+      <td>0.147516</td>
+      <td>0.229587</td>
+      <td>10026.0</td>
+      <td>0.729704</td>
+      <td>0.568832</td>
+      <td>0.597508</td>
+      <td>0.913545</td>
+      <td>0.933827</td>
+      <td>0.916245</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>smote</td>
+      <td>LinearSVC</td>
+      <td>0.844765</td>
+      <td>0.355811</td>
+      <td>0.067022</td>
+      <td>1.000000</td>
+      <td>0.000191</td>
+      <td>0.000381</td>
+      <td>41992.0</td>
+      <td>0.066856</td>
+      <td>1.000000</td>
+      <td>0.125333</td>
+      <td>3008.0</td>
+      <td>0.533428</td>
+      <td>0.500095</td>
+      <td>0.062857</td>
+      <td>0.937625</td>
+      <td>0.067022</td>
+      <td>0.008733</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>adasyn</td>
+      <td>LinearSVC</td>
+      <td>0.842827</td>
+      <td>0.352679</td>
+      <td>0.066978</td>
+      <td>1.000000</td>
+      <td>0.000143</td>
+      <td>0.000286</td>
+      <td>41992.0</td>
+      <td>0.066853</td>
+      <td>1.000000</td>
+      <td>0.125328</td>
+      <td>3008.0</td>
+      <td>0.533427</td>
+      <td>0.500071</td>
+      <td>0.062807</td>
+      <td>0.937624</td>
+      <td>0.066978</td>
+      <td>0.008644</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>baseline</td>
+      <td>LinearSVC</td>
+      <td>0.856003</td>
+      <td>0.381624</td>
+      <td>0.066860</td>
+      <td>1.000000</td>
+      <td>0.000021</td>
+      <td>0.000043</td>
+      <td>139974.0</td>
+      <td>0.066841</td>
+      <td>1.000000</td>
+      <td>0.125307</td>
+      <td>10026.0</td>
+      <td>0.533421</td>
+      <td>0.500011</td>
+      <td>0.062675</td>
+      <td>0.937628</td>
+      <td>0.066860</td>
+      <td>0.008416</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><img alt="../_images/61ba4d04ae5aa00ffa4a27c4b23beae39b55eae636ec46f8c491d6e0fed15055.png" src="../_images/61ba4d04ae5aa00ffa4a27c4b23beae39b55eae636ec46f8c491d6e0fed15055.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Saved final comparison to C:\\MachineLearningPG\reports\balance_final_comparison.csv
+Saved plot to C:\\MachineLearningPG\reports\balance_final_posF1_comparison.png
+</pre></div>
+</div>
+</div>
+</div>
+<p>Los resultados de LinearSVC en las secciones de SMOTE y ADASYN no son representativos de una capacidad predictiva real. Por lo tanto, se excluyó a LinearSVC de la tabla comparativa final de las técnicas de oversampling para evitar conclusiones engañosas y centrar el análisis en los modelos que demuestran un comportamiento de aprendizaje válido.</p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="conclusion-del-notebook-4-tecnicas-de-balanceo">
+<h1>Conclusión del Notebook 4: Técnicas de Balanceo<a class="headerlink" href="#conclusion-del-notebook-4-tecnicas-de-balanceo" title="Link to this heading">#</a></h1>
+<p>Este notebook se propuso resolver el desafío central identificado en el benchmark inicial: el severo desbalance de clases que resultaba en un <code class="docutils literal notranslate"><span class="pre">recall</span></code> inaceptablemente bajo para la clase de impago. A través de la evaluación sistemática de tres familias de técnicas de balanceo, hemos obtenido insights cruciales y hemos identificado las estrategias de modelado más prometedoras.</p>
+<section id="hallazgos-principales">
+<h2>Hallazgos Principales<a class="headerlink" href="#hallazgos-principales" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Éxito en la Misión Principal:</strong> Todas las técnicas de balanceo (<code class="docutils literal notranslate"><span class="pre">Class</span> <span class="pre">Weight</span></code>, <code class="docutils literal notranslate"><span class="pre">SMOTE</span></code>, <code class="docutils literal notranslate"><span class="pre">ADASYN</span></code>) lograron su objetivo principal de <strong>incrementar drásticamente el <code class="docutils literal notranslate"><span class="pre">recall</span></code> y el <code class="docutils literal notranslate"><span class="pre">F1-Score</span></code></strong> de la clase positiva. Se confirmó que el bajo rendimiento inicial no se debía a una falta de señal en los datos, sino a la optimización por defecto de los modelos hacia la <code class="docutils literal notranslate"><span class="pre">accuracy</span></code> general.</p></li>
+<li><p><strong>SMOTE Emerge como la Técnica de Oversampling Superior:</strong> Al comparar <code class="docutils literal notranslate"><span class="pre">SMOTE</span></code> y <code class="docutils literal notranslate"><span class="pre">ADASYN</span></code>, los resultados indican que la estrategia de oversampling más general de <strong>SMOTE proporcionó consistentemente un mejor equilibrio Precision-Recall (un F1-Score más alto)</strong> para los modelos de mayor rendimiento. ADASYN, al enfocarse en los puntos de la frontera, no aportó una ventaja adicional en este dataset.</p></li>
+<li><p><strong>Los Modelos que se Benefician Más del Oversampling:</strong> Mientras que la Ponderación de Clases fue muy efectiva para los modelos lineales, los modelos como <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> y <code class="docutils literal notranslate"><span class="pre">RandomForest</span></code> mostraron su mejor rendimiento cuando se combinaron con <code class="docutils literal notranslate"><span class="pre">SMOTE</span></code>.</p></li>
+</ol>
+</section>
+<section id="estrategia-ganadora-y-candidatos-seleccionados">
+<h2>Estrategia Ganadora y Candidatos Seleccionados<a class="headerlink" href="#estrategia-ganadora-y-candidatos-seleccionados" title="Link to this heading">#</a></h2>
+<p>Basado en el análisis comparativo final, la combinación con el <strong>F1-Score más alto para la clase positiva</strong> es la estrategia ganadora. Los resultados señalan a un grupo claro de candidatos de alto rendimiento.
+Los <strong>tres mejores contendientes</strong> seleccionados para la optimización y el tuning final son:</p>
+<ol class="arabic simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> con <code class="docutils literal notranslate"><span class="pre">SMOTE</span></code>:</strong> Consistentemente el de mayor rendimiento en F1-Score, representando el estado del arte de los modelos de «caja negra».</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">RandomForest</span></code> con <code class="docutils literal notranslate"><span class="pre">SMOTE</span></code>:</strong> Un fuerte competidor que ofrece una alternativa robusta a XGBoost.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code> con <code class="docutils literal notranslate"><span class="pre">Class</span> <span class="pre">Weight</span></code>:</strong> El mejor modelo lineal, que destaca por su rapidez y alta interpretabilidad, ofreciendo un baseline de «caja blanca» de alto rendimiento.</p></li>
+</ol>
+<hr class="docutils" />
+</section>
+<section id="proximos-pasos">
+<h2>Próximos Pasos:<a class="headerlink" href="#proximos-pasos" title="Link to this heading">#</a></h2>
+<p>Los resultados y modelos seleccionados en este notebook definen directamente el plan de trabajo para las siguientes etapas:</p>
+<section id="hacia-el-notebook-5-optimizacion-computacional">
+<h3><strong>Hacia el Notebook 5: Optimización Computacional</strong><a class="headerlink" href="#hacia-el-notebook-5-optimizacion-computacional" title="Link to this heading">#</a></h3>
+<p>Antes de embarcarnos en la costosa fase de tuning, el siguiente paso lógico es optimizar la eficiencia de nuestros modelos. En el próximo notebook, aplicaremos técnicas especializadas para acelerar el entrenamiento sin sacrificar el rendimiento predictivo.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="03_modelado_benchmark.html"
+       title="página anterior">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">anterior</p>
+        <p class="prev-next-title">03 - Modelado: Benchmark</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="05_optimizacion_computacional.html"
+       title="siguiente página">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">siguiente</p>
+        <p class="prev-next-title">05 - Optimización Computacional</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenido
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">04 - Técnicas de Balanceo de Clases</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluacion-del-balanceo-por-ponderacion-de-clases">Evaluación del Balanceo por Ponderación de Clases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helpers">Helpers</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#seccion-1-ponderacion-de-clases-y-baselines">Sección 1: Ponderación de clases y baselines</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Evaluación del Balanceo por Ponderación de Clases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-resultados-de-la-seccion-1-ponderacion-de-clases">Análisis de Resultados de la Sección 1: Ponderación de Clases</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#se-resuelve-el-problema-del-bajo-recall">Se Resuelve el Problema del Bajo <code class="docutils literal notranslate"><span class="pre">Recall</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#observacion-interesante-el-comportamiento-de-randomforest">Observación Interesante: El Comportamiento de RandomForest</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#veredicto-preliminar">Veredicto Preliminar</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#seccion-2-balanceo-por-oversampling-con-smote">Sección 2: Balanceo por Oversampling con SMOTE</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metodologia-de-evaluacion">Metodología de Evaluación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-resultados-de-la-seccion-2-smote">Análisis de Resultados de la Sección 2: SMOTE</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#randomforest-y-xgboost-responden-mejor-al-oversampling">RandomForest y XGBoost Responden Mejor al Oversampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#observacion-critica-el-colapso-de-linearsvc">Observación Crítica: El Colapso de LinearSVC</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Veredicto Preliminar</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#seccion-3-balanceo-por-oversampling-con-adasyn">Sección 3: Balanceo por Oversampling con ADASYN</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-resultados-de-la-seccion-3-adasyn">Análisis de Resultados de la Sección 3: ADASYN</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion-principal-adasyn-no-supera-a-smote-en-este-dataset">Conclusión Principal: ADASYN no Supera a SMOTE en este Dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validacion-de-la-hipotesis-sobre-linearsvc">Validación de la Hipótesis sobre LinearSVC</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Veredicto Preliminar</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#seccion-4-analisis-comparativo-final-y-conclusiones">Sección 4: Análisis Comparativo Final y Conclusiones</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metodologia-de-analisis">Metodología de Análisis</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion-del-notebook-4-tecnicas-de-balanceo">Conclusión del Notebook 4: Técnicas de Balanceo</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hallazgos-principales">Hallazgos Principales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estrategia-ganadora-y-candidatos-seleccionados">Estrategia Ganadora y Candidatos Seleccionados</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximos-pasos">Próximos Pasos:</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hacia-el-notebook-5-optimizacion-computacional"><strong>Hacia el Notebook 5: Optimización Computacional</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Por Andrés España | Omar Medina
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  © 2025 Andrés España | Universidad del Norte
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,925 @@
+
+<!DOCTYPE html>
+
+
+<html lang="es" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>07 — Evaluación del Modelo (Final) &#8212; Scoring Crediticio - GiveMeSomeCredit</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../_static/translations.js?v=d190bf04"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/07_evalucaion_modelos';</script>
+    <link rel="icon" href="../_static/flavicon.jpg"/>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="es"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Saltar al contenido principal</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Volver arriba</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Advertencia de versión"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="01_introduction.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/UninorteLogo.png" class="logo__image only-light" alt="Scoring Crediticio - GiveMeSomeCredit - Home"/>
+    <script>document.write(`<img src="../_static/UninorteLogo.png" class="logo__image only-dark" alt="Scoring Crediticio - GiveMeSomeCredit - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Búsqueda</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="01_introduction.html">
+                    01 - Proyecto: Scoring crediticio (GiveMeSomeCredit)
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="02_eda.html">02 - Análisis Exploratorio de Datos (EDA)</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="03_modelado_benchmark.html">03 - Modelado: Benchmark</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="04_balanceo_clases.html">04 - Técnicas de Balanceo de Clases</a></li>
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="05_optimizacion_computacional.html">05 - Optimización Computacional</a></li>
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="06_tuning_hiperparametros.html"><strong>06 — Tuning, Validación e Interpretabilidad</strong></a></li>
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="08_conclusion_recomendacion_final.html">Conclusión y Recomendaciones Finales</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/MrSpain2104/credit_scoring_machine_learning" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Repositorio de origen"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/MrSpain2104/credit_scoring_machine_learning/issues/new?title=Issue%20on%20page%20%2Fnotebooks/07_evalucaion_modelos.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Abrir un problema"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Descarga esta pagina">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/07_evalucaion_modelos.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Descargar archivo fuente"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimir en PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Modo de pantalla completa"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="claro/oscuro" aria-label="claro/oscuro" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>07 — Evaluación del Modelo (Final)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenido </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">07 — Evaluación del Modelo (Final)</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluacion-definitiva-en-el-conjunto-de-test">Evaluación Definitiva en el Conjunto de Test</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-resultados-en-el-conjunto-de-test"><strong>Análisis de Resultados en el Conjunto de Test</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-visual-del-comportamiento-del-modelo">Análisis Visual del Comportamiento del Modelo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-las-curvas-de-rendimiento-del-modelo"><strong>Análisis de las Curvas de Rendimiento del Modelo</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curva-roc"><strong>Curva ROC</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curva-precision-recall-la-mas-relevante"><strong>Curva Precision-Recall (La más Relevante)</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-del-umbral-de-decision-y-estrategia-de-negocio">Análisis del Umbral de Decisión y Estrategia de Negocio</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><strong>Análisis del Umbral de Decisión y Estrategia de Negocio</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#insights-clave-del-grafico">Insights Clave del Gráfico:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#veredicto-final-del-analisis">Veredicto Final del Análisis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion-del-notebook-7-un-modelo-validado-y-accionable"><strong>Conclusión del Notebook 7: Un Modelo Validado y Accionable</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resumen-de-hallazgos">Resumen de Hallazgos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vayamos-al-paso-final">Vayamos al paso final…</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="evaluacion-del-modelo-final">
+<h1>07 — Evaluación del Modelo (Final)<a class="headerlink" href="#evaluacion-del-modelo-final" title="Link to this heading">#</a></h1>
+<p>En este notebook realizamos la evaluación definitiva del modelo campeón en el conjunto de test, que se mantuvo reservado. El modelo final es un XGBoost con oversampling SMOTE. Para evitar fuga de datos, la imputación de valores faltantes se realiza dentro del Pipeline junto con SMOTE y el escalado.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sección 1: Carga y Re-entrenamiento del Modelo Final</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">classification_report</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">average_precision_score</span><span class="p">,</span>
+    <span class="n">precision_recall_curve</span><span class="p">,</span> <span class="n">roc_curve</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrecisionRecallDisplay</span><span class="p">,</span> <span class="n">RocCurveDisplay</span>
+
+<span class="c1"># Imbalanced-learn y XGBoost</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.over_sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">SMOTE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">ImbPipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
+
+<span class="c1"># Configuración</span>
+<span class="n">ROOT</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;c:</span><span class="se">\\</span><span class="s2">MachineLearningPG&quot;</span>
+<span class="n">DATA_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ROOT</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="n">RANDOM_STATE</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1"># 1) Cargar dataset procesado (sin aplicar fillna aquí)</span>
+<span class="n">proc_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">,</span> <span class="s1">&#39;processed_for_modeling.csv&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">proc_path</span><span class="p">),</span> <span class="s1">&#39;Archivo processed_for_modeling.csv no encontrado.&#39;</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">proc_path</span><span class="p">)</span>
+<span class="k">if</span> <span class="s1">&#39;Unnamed: 0&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Unnamed: 0&#39;</span><span class="p">])</span>
+
+<span class="n">TARGET</span> <span class="o">=</span> <span class="s1">&#39;SeriousDlqin2yrs&#39;</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">TARGET</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">TARGET</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># 2) Split 70/30 estratificado</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span>
+<span class="p">)</span>
+
+<span class="c1"># 3) Definir mejores hiperparámetros XGB encontrados en Tuning Hiperparámetros</span>
+<span class="n">best_xgb_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;subsample&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s1">&#39;min_child_weight&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="s1">&#39;colsample_bytree&#39;</span><span class="p">:</span> <span class="mf">0.7</span>
+<span class="p">}</span>
+
+<span class="c1"># 4) Construir Pipeline final: Imputer -&gt; SMOTE -&gt; Scaler -&gt; XGB</span>
+<span class="n">pipe</span> <span class="o">=</span> <span class="n">ImbPipeline</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;imputer&#39;</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;smote&#39;</span><span class="p">,</span> <span class="n">SMOTE</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">(</span><span class="n">with_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_std</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">XGBClassifier</span><span class="p">(</span>
+        <span class="n">tree_method</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">,</span>
+        <span class="n">use_label_encoder</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">eval_metric</span><span class="o">=</span><span class="s1">&#39;logloss&#39;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">best_xgb_params</span>
+    <span class="p">))</span>
+<span class="p">])</span>
+
+<span class="c1"># 5) Entrenar en todo el conjunto de entrenamiento</span>
+<span class="n">pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pipeline final entrenado (Imputer + SMOTE + Scaler + XGB)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\MachineLearningPG\venv\Lib\site-packages\xgboost\training.py:183: UserWarning: [11:45:37] WARNING: C:\actions-runner\_work\xgboost\xgboost\src\learner.cc:738: 
+Parameters: { &quot;use_label_encoder&quot; } are not used.
+
+  bst.update(dtrain, iteration=i, fobj=obj)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Pipeline final entrenado (Imputer + SMOTE + Scaler + XGB)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="evaluacion-definitiva-en-el-conjunto-de-test">
+<h1>Evaluación Definitiva en el Conjunto de Test<a class="headerlink" href="#evaluacion-definitiva-en-el-conjunto-de-test" title="Link to this heading">#</a></h1>
+<p>Con el pipeline de nuestro modelo ya re-entrenado, ha llegado el momento crucial de evaluar su rendimiento en el <strong>conjunto de <code class="docutils literal notranslate"><span class="pre">test</span></code></strong>. Este conjunto contiene datos que el modelo no ha visto en la fase de entrenamiento, proporcionando así una estimación final e imparcial de su capacidad de generalización.</p>
+<p>En esta sección, realizaremos las siguientes acciones:</p>
+<ol class="arabic simple">
+<li><p><strong>Generar Predicciones:</strong> Utilizaremos el pipeline final para predecir las etiquetas (<code class="docutils literal notranslate"><span class="pre">predict</span></code>) y las probabilidades (<code class="docutils literal notranslate"><span class="pre">predict_proba</span></code>) para el conjunto <code class="docutils literal notranslate"><span class="pre">X_test</span></code>.</p></li>
+<li><p><strong>Calcular Métricas Clave:</strong> Se calcularán las métricas de rendimiento más importantes:</p>
+<ul class="simple">
+<li><p><strong>AUC-ROC:</strong> Para medir la capacidad de discriminación general del modelo.</p></li>
+<li><p><strong>Average Precision (AUC-PR):</strong> Especialmente relevante para datasets desbalanceados.</p></li>
+<li><p><strong>Reporte de Clasificación:</strong> Un desglose detallado de <code class="docutils literal notranslate"><span class="pre">Precision</span></code>, <code class="docutils literal notranslate"><span class="pre">Recall</span></code> y <code class="docutils literal notranslate"><span class="pre">F-Score</span></code> por clase.</p></li>
+</ul>
+</li>
+<li><p><strong>Visualizar la Matriz de Confusión:</strong> Se generará una matriz de confusión para visualizar directamente el número de Verdaderos Positivos, Falsos Positivos, Verdaderos Negativos y Falsos Negativos, utilizando el umbral de decisión por defecto de 0.5.</p></li>
+</ol>
+<p>Este análisis nos dará la «calificación» final y definitiva de nuestro modelo.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sección 2: Evaluación Definitiva en el Conjunto de Test</span>
+<span class="c1"># Predicciones en test</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">y_proba</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># Métricas principales</span>
+<span class="n">auc_roc</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_proba</span><span class="p">)</span>
+<span class="n">auc_pr</span> <span class="o">=</span> <span class="n">average_precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_proba</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AUC-ROC: </span><span class="si">{</span><span class="n">auc_roc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average Precision (AUC-PR): </span><span class="si">{</span><span class="n">auc_pr</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Reporte de clasificación</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Classification Report:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="c1"># Matriz de confusión</span>
+<span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">xticklabels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span> <span class="n">yticklabels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Matriz de Confusión XGBOOST&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Predicción&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Real&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AUC-ROC: 0.8593
+Average Precision (AUC-PR): 0.3763
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.98      0.82      0.89     41992
+           1       0.23      0.73      0.35      3008
+
+    accuracy                           0.82     45000
+   macro avg       0.60      0.78      0.62     45000
+weighted avg       0.93      0.82      0.86     45000
+</pre></div>
+</div>
+<img alt="../_images/a10ca453aa2a8e38609d103d3dbc9c6967b5551001a876c3b024ad6e6c23a7a5.png" src="../_images/a10ca453aa2a8e38609d103d3dbc9c6967b5551001a876c3b024ad6e6c23a7a5.png" />
+</div>
+</div>
+<section id="analisis-de-resultados-en-el-conjunto-de-test">
+<h2><strong>Análisis de Resultados en el Conjunto de Test</strong><a class="headerlink" href="#analisis-de-resultados-en-el-conjunto-de-test" title="Link to this heading">#</a></h2>
+<p>La evaluación final del modelo campeón en el conjunto de <code class="docutils literal notranslate"><span class="pre">test</span></code> confirma su <strong>excelente rendimiento y robustez</strong>.</p>
+<ul class="simple">
+<li><p><strong>Generalización:</strong> El <strong>AUC en test de 0.8593</strong> y el <strong>F1-Score de 0.35</strong> son consistentes con los resultados de la validación cruzada, lo que indica que el modelo no está sobreajustado y generaliza bien a datos nuevos.</p></li>
+<li><p><strong>Objetivo Cumplido:</strong> El modelo resuelve el problema principal del desbalance, logrando un <strong>alto <code class="docutils literal notranslate"><span class="pre">recall</span></code> de 0.73</strong>. Esto significa que es capaz de <strong>identificar correctamente al 73% de los clientes</strong> que realmente incurrirán en impago.</p></li>
+<li><p><strong>Equilibrio Sólido:</strong> Aunque la <code class="docutils literal notranslate"><span class="pre">precision</span></code> es del 23% (el trade-off esperado), el F1-Score de 0.35 demuestra un equilibrio entre la detección de riesgos y la fiabilidad de las alertas.</p></li>
+</ul>
+<hr class="docutils" />
+</section>
+<section id="analisis-visual-del-comportamiento-del-modelo">
+<h2>Análisis Visual del Comportamiento del Modelo<a class="headerlink" href="#analisis-visual-del-comportamiento-del-modelo" title="Link to this heading">#</a></h2>
+<p>Más allá de las métricas puntuales, es crucial entender el <strong>comportamiento dinámico</strong> de nuestro modelo a través de diferentes umbrales de decisión. Para ello, visualizaremos dos curvas fundamentales:</p>
+<ol class="arabic simple">
+<li><p><strong>Curva ROC (Receiver Operating Characteristic):</strong> Muestra el trade-off entre la <strong>Tasa de Verdaderos Positivos (Recall)</strong> y la <strong>Tasa de Falsos Positivos</strong>. Un modelo perfecto se situaría en la esquina superior izquierda. El área bajo esta curva (AUC-ROC) nos da una medida global de la capacidad de discriminación del modelo.</p></li>
+<li><p><strong>Curva Precision-Recall:</strong> Es la visualización más importante para problemas desbalanceados como el nuestro. Muestra el trade-off directo entre la <strong>Precisión</strong> (¿qué tan fiables son nuestras alertas de riesgo?) y el <strong>Recall</strong> (¿cuántos de los verdaderos riesgos estamos encontrando?).</p></li>
+</ol>
+<p>Estas visualizaciones nos permitirán comprender a fondo los puntos fuertes y las concesiones de nuestro modelo final.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Crear una figura con dos subplots uno al lado del otro</span>
+<span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Análisis Visual del Comportamiento del Modelo en el Conjunto de Test&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+
+<span class="c1">#Gráfico 1: Curva ROC</span>
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span>
+    <span class="n">y_test</span><span class="p">,</span> 
+    <span class="n">y_proba</span><span class="p">,</span>  
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;XGBoost Final&#39;</span><span class="p">,</span> 
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#880e4f&#39;</span> 
+<span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Clasificador Aleatorio (AUC = 0.5)&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Curva ROC&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Tasa de Falsos Positivos&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Tasa de Verdaderos Positivos (Recall)&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+<span class="c1"># Gráfico 2: Curva Precision-Recall </span>
+<span class="n">PrecisionRecallDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span>
+    <span class="n">y_test</span><span class="p">,</span> 
+    <span class="n">y_proba</span><span class="p">,</span> 
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;XGBoost Final&#39;</span><span class="p">,</span> 
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#b71c1c&#39;</span>
+<span class="p">)</span>
+<span class="n">no_skill</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">[</span><span class="n">y_test</span><span class="o">==</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">no_skill</span><span class="p">,</span> <span class="n">no_skill</span><span class="p">],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Clasificador Aleatorio&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Curva Precision-Recall&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Recall (Sensibilidad)&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Precision&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+<span class="c1"># Ajustar y mostrar</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">rect</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.96</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c:\MachineLearningPG\venv\Lib\site-packages\sklearn\utils\_plotting.py:175: FutureWarning: `**kwargs` is deprecated and will be removed in 1.9. Pass all matplotlib arguments to `curve_kwargs` as a dictionary instead.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/983e70a43e8b6f98ed32fdfe14f644ba41a7e6d1f3796e5872b2b8f447b554ae.png" src="../_images/983e70a43e8b6f98ed32fdfe14f644ba41a7e6d1f3796e5872b2b8f447b554ae.png" />
+</div>
+</div>
+</section>
+<section id="analisis-de-las-curvas-de-rendimiento-del-modelo">
+<h2><strong>Análisis de las Curvas de Rendimiento del Modelo</strong><a class="headerlink" href="#analisis-de-las-curvas-de-rendimiento-del-modelo" title="Link to this heading">#</a></h2>
+<section id="curva-roc">
+<h3><strong>Curva ROC</strong><a class="headerlink" href="#curva-roc" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>La curva ROC muestra una excelente capacidad de discriminación. La curva del modelo se arquea pronunciadamente hacia la esquina superior izquierda, alejándose significativamente de la línea de rendimiento aleatorio (línea punteada negra).</p></li>
+<li><p>El <strong>AUC de 0.86</strong> confirma numéricamente lo que vemos visualmente: el modelo es muy bueno distinguiendo entre un cliente propenso al impago y uno que no lo es. Tiene un alto poder de ranking.</p></li>
+</ul>
+</section>
+<section id="curva-precision-recall-la-mas-relevante">
+<h3><strong>Curva Precision-Recall (La más Relevante)</strong><a class="headerlink" href="#curva-precision-recall-la-mas-relevante" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>La curva Precision-Recall es la herramienta más importante para nuestro problema desbalanceado. Muestra el trade-off directo entre <code class="docutils literal notranslate"><span class="pre">Precision</span></code> y <code class="docutils literal notranslate"><span class="pre">Recall</span></code>.</p></li>
+<li><p><strong>Insights Clave:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Superioridad sobre el Azar:</strong> La curva de nuestro modelo (línea roja) se mantiene muy por encima de la línea de rendimiento de un clasificador aleatorio (línea punteada negra). Esto demuestra que el modelo está aportando un valor predictivo real y significativo. El <strong>AP (Average Precision) de 0.38</strong> cuantifica esta superioridad.</p></li>
+<li><p><strong>El Trade-off en Práctica:</strong> Podemos extraer escenarios de negocio directamente de esta curva:</p>
+<ul>
+<li><p><strong>Para un <code class="docutils literal notranslate"><span class="pre">Recall</span></code> alto (ej. 0.8 o 80%)</strong>, es decir, si queremos encontrar al 80% de todos los clientes que van a impagar, la <code class="docutils literal notranslate"><span class="pre">Precision</span></code> correspondiente es de aproximadamente <strong>0.20 (20%)</strong>.</p></li>
+<li><p><strong>Para una <code class="docutils literal notranslate"><span class="pre">Precision</span></code> alta (ej. 0.6 o 60%)</strong>, es decir, si queremos que 6 de cada 10 alertas de riesgo sean correctas, el <code class="docutils literal notranslate"><span class="pre">Recall</span></code> correspondiente sería de aproximadamente <strong>0.30 (30%)</strong>.</p></li>
+</ul>
+</li>
+<li><p>La curva muestra claramente que no se puede tener un alto <code class="docutils literal notranslate"><span class="pre">recall</span></code> y una alta <code class="docutils literal notranslate"><span class="pre">precision</span></code> simultáneamente. A medida que intentamos encontrar a más morosos (aumentando el <code class="docutils literal notranslate"><span class="pre">recall</span></code>), inevitablemente tendremos que aceptar más falsas alarmas (disminuyendo la <code class="docutils literal notranslate"><span class="pre">precision</span></code>).</p></li>
+</ol>
+</li>
+</ul>
+<p>En conjunto, estas visualizaciones confirman que el modelo es robusto. La siguiente sección, donde analizaremos el umbral de decisión, nos permitirá elegir el punto de operación óptimo en la curva Precision-Recall que mejor se alinee con los objetivos de negocio.</p>
+<hr class="docutils" />
+</section>
+</section>
+<section id="analisis-del-umbral-de-decision-y-estrategia-de-negocio">
+<h2>Análisis del Umbral de Decisión y Estrategia de Negocio<a class="headerlink" href="#analisis-del-umbral-de-decision-y-estrategia-de-negocio" title="Link to this heading">#</a></h2>
+<p>Un modelo de clasificación no solo produce una predicción binaria (0 o 1), sino una <strong>probabilidad</strong>. Por defecto, se utiliza un umbral de 0.5 para decidir, pero este valor raramente es el óptimo para un problema de negocio, especialmente en un contexto desbalanceado.</p>
+<p>El objetivo de esta sección es analizar cómo cambian las métricas clave del modelo (<code class="docutils literal notranslate"><span class="pre">Precision</span></code>, <code class="docutils literal notranslate"><span class="pre">Recall</span></code> y <code class="docutils literal notranslate"><span class="pre">F1-Score</span></code>) a medida que variamos el umbral de decisión. Este análisis es fundamental para responder preguntas de negocio como:</p>
+<ul class="simple">
+<li><p>«¿Qué umbral deberíamos usar para maximizar el equilibrio entre encontrar morosos y evitar falsas alarmas (maximizar F1)?»</p></li>
+<li><p>«Si el objetivo es encontrar al 80% de los morosos (<code class="docutils literal notranslate"><span class="pre">Recall</span></code> = 0.8), ¿cuál será nuestra tasa de acierto (<code class="docutils literal notranslate"><span class="pre">Precision</span></code>) y qué umbral debemos usar?»</p></li>
+</ul>
+<p>Este análisis nos permite transformar el resultado técnico del modelo en una herramienta estratégica y accionable para el negocio.</p>
+<hr class="docutils" />
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sección 4: Análisis del Umbral de Decisión (Business Insight)</span>
+<span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">501</span><span class="p">)</span>
+<span class="n">precisions</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">recalls</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">f1s</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">thresholds</span><span class="p">:</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_proba</span> <span class="o">&gt;=</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="c1"># evitar divisiones por cero</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y_test</span><span class="p">[</span><span class="n">preds</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">preds</span><span class="o">.</span><span class="n">sum</span><span class="p">())))</span>
+    <span class="c1"># Mejor usar funciones sklearn (con control de cero_division)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">preds</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">preds</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">preds</span><span class="p">)</span>
+    <span class="n">precisions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">recalls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">f1s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># Umbral que maximiza F1</span>
+<span class="n">best_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">f1s</span><span class="p">))</span>
+<span class="n">best_thr</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">thresholds</span><span class="p">[</span><span class="n">best_idx</span><span class="p">])</span>
+<span class="n">best_f1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">f1s</span><span class="p">[</span><span class="n">best_idx</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Umbral óptimo por F1: </span><span class="si">{</span><span class="n">best_thr</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> (F1=</span><span class="si">{</span><span class="n">best_f1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Gráfico de Precision, Recall y F1 vs Umbral</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">precisions</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Precision&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#041fb9&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">recalls</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Recall&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#eb0c08&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">f1s</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;F1&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#16e203&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">best_thr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Mejor Umbral =</span><span class="si">{</span><span class="n">best_thr</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Umbral de decisión&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Score&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Precision / Recall / F1 vs Umbral&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Umbral óptimo por F1: 0.706 (F1=0.4355)
+</pre></div>
+</div>
+<img alt="../_images/44e0f81873b25f8f19ac6c4de390a567e6aae9d25f7e77a98040ae270aa2260e.png" src="../_images/44e0f81873b25f8f19ac6c4de390a567e6aae9d25f7e77a98040ae270aa2260e.png" />
+</div>
+</div>
+</section>
+<section id="id1">
+<h2><strong>Análisis del Umbral de Decisión y Estrategia de Negocio</strong><a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Este gráfico visualiza el trade-off fundamental entre <code class="docutils literal notranslate"><span class="pre">Precision</span></code>, <code class="docutils literal notranslate"><span class="pre">Recall</span></code> y <code class="docutils literal notranslate"><span class="pre">F1-Score</span></code> a medida que se ajusta el umbral de decisión de nuestro modelo final. A diferencia del umbral por defecto de 0.5, este análisis nos permite elegir un punto de operación que se alinee estratégicamente con los objetivos del negocio.</p>
+<section id="insights-clave-del-grafico">
+<h3>Insights Clave del Gráfico:<a class="headerlink" href="#insights-clave-del-grafico" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>El Trade-off Clásico:</strong> Se observa claramente la relación inversa entre <code class="docutils literal notranslate"><span class="pre">Precision</span></code> (línea azul) y <code class="docutils literal notranslate"><span class="pre">Recall</span></code> (línea roja). Al disminuir el umbral (moverse hacia la izquierda), el modelo se vuelve más «sensible», capturando más casos positivos (<code class="docutils literal notranslate"><span class="pre">Recall</span></code> aumenta), pero a costa de cometer más falsas alarmas (<code class="docutils literal notranslate"><span class="pre">Precision</span></code> disminuye).</p></li>
+<li><p><strong>Identificación del Umbral Óptimo (para F1-Score):</strong></p>
+<ul class="simple">
+<li><p>La línea verde representa el <code class="docutils literal notranslate"><span class="pre">F1-Score</span></code>, que es el equilibrio armónico entre <code class="docutils literal notranslate"><span class="pre">Precision</span></code> y <code class="docutils literal notranslate"><span class="pre">Recall</span></code>.</p></li>
+<li><p>El punto más alto de esta curva se alcanza en un <strong>umbral de aproximadamente 0.706</strong>, como indica la línea punteada gris.</p></li>
+<li><p><strong>Implicación de Negocio:</strong> Si el objetivo es maximizar el balance general entre encontrar morosos y la fiabilidad de las predicciones, este sería el umbral recomendado a implementar en producción. Usar este umbral resultaría en un F1-Score superior al obtenido con el umbral por defecto.</p></li>
+</ul>
+</li>
+<li><p><strong>Flexibilidad para Diferentes Estrategias de Negocio:</strong> Este gráfico es una herramienta estratégica. Permite al negocio elegir un umbral según su apetito de riesgo:</p>
+<ul class="simple">
+<li><p><strong>Estrategia Agresiva (Maximizar Detección):</strong> Si el banco quiere ser muy agresivo y detectar, por ejemplo, al <strong>80% de los morosos (<code class="docutils literal notranslate"><span class="pre">Recall</span></code> = 0.8)</strong>, debería establecer un umbral más bajo, en torno a <strong>0.35</strong>. A este nivel, la <code class="docutils literal notranslate"><span class="pre">precision</span></code> sería de aproximadamente el 15%.</p></li>
+<li><p><strong>Estrategia Conservadora (Minimizar Falsas Alarmas):</strong> Si el costo de investigar una falsa alarma es muy alto y el banco prefiere solo actuar sobre los casos más seguros, podría elegir un umbral más alto, como <strong>0.80</strong>. A este nivel, la <code class="docutils literal notranslate"><span class="pre">precision</span></code> sería de aproximadamente el 45%, pero solo se identificaría al 40% de los morosos (<code class="docutils literal notranslate"><span class="pre">Recall</span></code> = 0.4).</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="veredicto-final-del-analisis">
+<h3>Veredicto Final del Análisis<a class="headerlink" href="#veredicto-final-del-analisis" title="Link to this heading">#</a></h3>
+<p>El análisis del umbral de decisión transforma nuestro modelo de una herramienta de clasificación binaria a un <strong>instrumento de gestión de riesgo flexible</strong>. Demuestra que el umbral por defecto de 0.5 no es el óptimo y que el <strong>umbral de ~0.706 ofrece el mejor equilibrio F1-Score</strong>.</p>
+<hr class="docutils" />
+<p>¡Absolutamente! Has llegado al final del análisis técnico. Esta mini-conclusión servirá como el cierre perfecto para el Notebook 7 y el puente ideal hacia el gran final en el Notebook 8.</p>
+<p>Aquí tienes el texto en formato Markdown.</p>
+<hr class="docutils" />
+</section>
+</section>
+<section id="conclusion-del-notebook-7-un-modelo-validado-y-accionable">
+<h2><strong>Conclusión del Notebook 7: Un Modelo Validado y Accionable</strong><a class="headerlink" href="#conclusion-del-notebook-7-un-modelo-validado-y-accionable" title="Link to this heading">#</a></h2>
+<p>Este notebook ha cumplido su objetivo principal: realizar una <strong>evaluación final, exhaustiva e imparcial</strong> del modelo campeón, un clasificador <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> con <code class="docutils literal notranslate"><span class="pre">SMOTE</span></code> y hiperparámetros optimizados.</p>
+<section id="resumen-de-hallazgos">
+<h3>Resumen de Hallazgos<a class="headerlink" href="#resumen-de-hallazgos" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Validación en Datos No Vistos:</strong> El modelo ha demostrado una excelente capacidad de generalización. Su rendimiento en el conjunto de <code class="docutils literal notranslate"><span class="pre">test</span></code> (<strong>AUC de ~0.86, F1-Score de ~0.35</strong>) fue consistente con los resultados obtenidos durante la validación cruzada, confirmando su robustez y fiabilidad.</p></li>
+<li><p><strong>Solución al Problema de Negocio:</strong> El modelo final resuelve con éxito el problema del desbalance de clases, siendo capaz de <strong>identificar correctamente a más del 70% de los clientes en riesgo de impago (<code class="docutils literal notranslate"><span class="pre">recall</span></code>)</strong>, un salto masivo desde el benchmark inicial.</p></li>
+<li><p><strong>De Modelo a Herramienta Estratégica:</strong> El análisis del umbral de decisión ha demostrado que podemos ajustar la sensibilidad del modelo para alinearlo con diferentes estrategias de negocio, identificando un <strong>umbral óptimo de ~0.706</strong> que maximiza el equilibrio entre <code class="docutils literal notranslate"><span class="pre">Precision</span></code> y <code class="docutils literal notranslate"><span class="pre">Recall</span></code> (F1-Score).</p></li>
+</ol>
+</section>
+<section id="vayamos-al-paso-final">
+<h3>Vayamos al paso final…<a class="headerlink" href="#vayamos-al-paso-final" title="Link to this heading">#</a></h3>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenido
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">07 — Evaluación del Modelo (Final)</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluacion-definitiva-en-el-conjunto-de-test">Evaluación Definitiva en el Conjunto de Test</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-resultados-en-el-conjunto-de-test"><strong>Análisis de Resultados en el Conjunto de Test</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-visual-del-comportamiento-del-modelo">Análisis Visual del Comportamiento del Modelo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-las-curvas-de-rendimiento-del-modelo"><strong>Análisis de las Curvas de Rendimiento del Modelo</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curva-roc"><strong>Curva ROC</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curva-precision-recall-la-mas-relevante"><strong>Curva Precision-Recall (La más Relevante)</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-del-umbral-de-decision-y-estrategia-de-negocio">Análisis del Umbral de Decisión y Estrategia de Negocio</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><strong>Análisis del Umbral de Decisión y Estrategia de Negocio</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#insights-clave-del-grafico">Insights Clave del Gráfico:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#veredicto-final-del-analisis">Veredicto Final del Análisis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion-del-notebook-7-un-modelo-validado-y-accionable"><strong>Conclusión del Notebook 7: Un Modelo Validado y Accionable</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resumen-de-hallazgos">Resumen de Hallazgos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vayamos-al-paso-final">Vayamos al paso final…</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Por Andrés España | Omar Medina
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  © 2025 Andrés España | Universidad del Norte
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
